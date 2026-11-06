@@ -3,413 +3,490 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Glossa · Understand every word of the film</title>
-<meta name="description" content="Glossa is a free Chrome extension for Netflix. Pause, click any word in the subtitle, and see what it means in English, Hindi and Hinglish. A vocabulary PDF arrives when the credits roll.">
-<meta property="og:title" content="Glossa · Understand every word of the film">
-<meta property="og:description" content="Pause Netflix, click any subtitle word, and see what it means in English, Hindi and Hinglish.">
+<title>Glossa · Learn English from every movie</title>
+<meta name="description" content="Glossa is a free Chrome extension for Netflix. Pause and click any subtitle word to see its meaning in English, Hindi and Hinglish, and get a vocabulary PDF when the movie ends.">
+<meta property="og:title" content="Glossa · Learn English from every movie">
+<meta property="og:description" content="Pause Netflix, click any subtitle word, and see what it means in English, Hindi and Hinglish. Free and open source.">
 <meta property="og:image" content="https://kunalsharmavlog-hue.github.io/glossa/assets/icon-512.png">
-<meta name="theme-color" content="#0c0b0a">
+<meta name="theme-color" content="#000000">
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,50;1,9..144,300..600,50&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --night: #0c0b0a; --cream: #f4efe6; --cream2: #ebe4d6; --paper: #fbf8f2;
-    --ink: #1b1915; --ink2: #4a453d; --gold: #f2c94c; --gold-d: #b8860b; --line-l: rgba(27,25,21,.12);
-    --serif: "Fraunces", Georgia, serif; --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --sub: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --gut: clamp(20px, 4vw, 56px);
+    --bg: #000; --card: #0f0f10; --card2: #18181a; --line: rgba(255,255,255,.09); --t2: #a1a1a6; --t3: #5c5c62;
+    --gold: #f2c94c; --gold2: #ffdc73; --ink: #141311; --cream: #ede8dc; --green: #34d399;
+    --f: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --gut: clamp(16px, 2.6vw, 36px);
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-  body { margin: 0; background: var(--night); color: var(--cream); font: 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: #fff; font: 15px/1.5 var(--f); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   a { color: inherit; text-decoration: none; }
   img { display: block; max-width: 100%; }
-  ::selection { background: var(--gold); color: var(--ink); }
-  .hi { font-family: "Noto Sans Devanagari", var(--sans); }
-  .wrap { width: min(1240px, 100% - var(--gut) * 2); margin: 0 auto; }
-  .kicker { font: 500 12px/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; }
-  .grain { position: relative; }
-  .grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .12; mix-blend-mode: overlay; z-index: 7;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  ::selection { background: var(--gold); color: #000; }
+  .hi { font-family: "Noto Sans Devanagari", var(--f); }
+  .wrap { width: min(1360px, 100% - var(--gut) * 2); margin: 0 auto; }
+  .cap { font: 600 10.5px/1 var(--f); letter-spacing: .12em; text-transform: uppercase; }
+  .ph { background-size: cover; background-position: center; background-color: #1a1a1a; }
 
-  .btn { display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 26px; border-radius: 999px; background: var(--gold); color: var(--ink); font: 600 15px var(--sans); transition: transform .3s, box-shadow .3s; box-shadow: 0 10px 30px rgba(242,201,76,.22); }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(242,201,76,.32); }
-  .btn svg { width: 18px; height: 18px; }
-  .link { display: inline-flex; align-items: center; gap: 8px; font: 500 15px var(--sans); border-bottom: 1px solid currentColor; padding-bottom: 2px; opacity: .85; transition: opacity .2s; }
-  .link:hover { opacity: 1; }
+  .pill { display: inline-flex; align-items: center; justify-content: center; height: 34px; padding: 0 16px; border-radius: 999px; background: var(--gold); color: #000; font: 700 10.5px/1 var(--f); letter-spacing: .12em; text-transform: uppercase; overflow: hidden; position: relative; transition: background .25s; white-space: nowrap; }
+  .pill:hover { background: var(--gold2); }
+  .pill span { display: block; transition: transform .35s cubic-bezier(.7,0,.2,1); }
+  .pill span + span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: translateY(100%); }
+  .pill:hover span:first-child { transform: translateY(-260%); }
+  .pill:hover span + span { transform: none; }
+  .pill.dark { background: #fff; }
+  .pill.ghost { background: rgba(255,255,255,.1); color: #fff; }
 
-  /* Hero: a film still */
-  .hero { position: relative; height: 100svh; min-height: 640px; overflow: hidden; background: #000; }
-  .hero .photo { position: absolute; inset: -4% 0; background: url("https://images.unsplash.com/photo-1655057011043-158c48f3809d?w=2400&q=80&auto=format&fit=crop") 62% 40% / cover no-repeat; filter: saturate(.9) contrast(1.05); transform: scale(1.08); animation: kenburns 22s ease-out forwards; }
-  @keyframes kenburns { to { transform: scale(1); } }
-  .hero .grade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,7,6,.88) 0%, rgba(8,7,6,.55) 38%, rgba(8,7,6,.05) 70%), linear-gradient(0deg, rgba(8,7,6,.85) 0%, rgba(8,7,6,0) 40%); }
-  .letterbox { position: absolute; left: 0; right: 0; height: 7vh; background: #000; z-index: 5; transition: height 1.4s cubic-bezier(.7,0,.2,1); }
-  .letterbox.top { top: 0; } .letterbox.bot { bottom: 0; }
-  .ready .letterbox { height: 56px; }
-  .hero-nav { position: absolute; top: 0; left: 0; right: 0; height: 56px; z-index: 8; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gut); }
-  .logo { display: flex; align-items: center; gap: 10px; font: 500 22px/1 var(--serif); letter-spacing: -.01em; }
-  .logo svg { width: 26px; height: 26px; }
-  .hero-nav nav { display: flex; gap: 30px; font-size: 14px; color: rgba(244,239,230,.75); }
-  .hero-nav nav a:hover { color: #fff; }
-  .hero-nav nav a.dl { color: var(--gold); }
-  @media (max-width: 720px) { .hero-nav nav a:not(.dl) { display: none; } }
-  .hero-copy { position: absolute; z-index: 4; left: var(--gut); top: 50%; translate: 0 -58%; max-width: 640px; }
-  .hero-copy .kicker { color: var(--gold); margin-bottom: 26px; display: flex; align-items: center; gap: 12px; }
-  .hero-copy .kicker::before { content: ""; width: 28px; height: 1px; background: currentColor; }
-  .hero h1 { font: 300 clamp(48px, 7vw, 104px)/.98 var(--serif); letter-spacing: -.035em; margin: 0 0 26px; font-variation-settings: "SOFT" 50, "opsz" 144; }
-  .hero h1 em { font-style: italic; font-weight: 300; color: var(--gold); }
-  .hero-copy p { font-size: clamp(16px, 1.4vw, 19px); color: rgba(244,239,230,.78); max-width: 460px; margin: 0 0 34px; }
-  .hero-copy .row { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
-  .fadein { opacity: 0; transform: translateY(18px); transition: opacity 1.2s cubic-bezier(.2,.7,.2,1), transform 1.2s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0s); }
-  .ready .fadein { opacity: 1; transform: none; }
+  /* Nav */
+  .nav { position: fixed; inset: 0 0 auto; z-index: 80; transition: background .3s; }
+  .nav.solid { background: rgba(0,0,0,.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .nav .wrap { height: 60px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .logo { display: flex; align-items: center; gap: 8px; font: 700 19px/1 var(--f); letter-spacing: -.03em; }
+  .logo svg { width: 24px; height: 24px; }
+  .nav nav { display: flex; gap: 40px; color: var(--t2); }
+  .nav nav a:hover { color: #fff; }
+  .nav .r { display: flex; justify-content: flex-end; align-items: center; gap: 22px; color: var(--t2); }
+  .nav .r a:hover { color: #fff; }
+  @media (max-width: 820px) { .nav nav, .nav .r .gh { display: none; } .nav .wrap { grid-template-columns: 1fr auto; } }
 
-  .subtitle { position: absolute; z-index: 4; left: 50%; bottom: calc(56px + 6vh); translate: -50% 0; width: 92%; text-align: center; font: 600 clamp(18px, 2.1vw, 30px)/1.3 var(--sub); color: #fff; text-shadow: 0 0 3px #000, 0 2px 10px rgba(0,0,0,.8); transition: opacity .5s; }
-  .subtitle .pick { position: relative; display: inline-block; }
-  .subtitle .pick .inner { position: relative; isolation: isolate; }
-  .subtitle .pick .inner::before { content: ""; position: absolute; inset: 8% -4px 2%; background: var(--gold); border-radius: 3px; z-index: -1; transform: scaleX(0); transform-origin: left; transition: transform .5s cubic-bezier(.7,0,.2,1); }
-  .subtitle .pick.on .inner { color: var(--ink); text-shadow: none; }
-  .subtitle .pick.on .inner::before { transform: scaleX(1); }
-  .gloss { position: absolute; bottom: calc(100% + 16px); left: 50%; translate: -50% 0; width: 270px; text-align: left; padding: 14px 16px 12px; border-radius: 14px; background: rgba(20,19,17,.94); box-shadow: 0 20px 60px rgba(0,0,0,.6), inset 0 0 0 1px rgba(244,239,230,.12); color: #ede8dc; text-shadow: none; font: 400 13px/1.45 var(--sans); opacity: 0; transform: translateY(8px); transition: opacity .4s .25s, transform .4s .25s; pointer-events: none; white-space: normal; }
-  .gloss::after { content: ""; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; background: rgba(20,19,17,.94); transform: translateX(-50%) rotate(45deg); }
-  .pick.on .gloss { opacity: 1; transform: none; }
-  .gloss b { display: block; font: 500 21px/1.1 var(--serif); color: var(--gold); margin-bottom: 4px; }
-  .gloss b i { font: italic 400 12px var(--sans); color: #8f897c; margin-left: 6px; }
-  .gloss .hi { display: block; margin-top: 6px; font-size: 15px; color: #fff; }
-  .credit-mini { position: absolute; z-index: 8; right: var(--gut); bottom: 20px; font: 400 11px var(--sans); color: rgba(244,239,230,.45); }
-  @media (max-width: 760px) {
-    .hero .photo { background-position: 36% 30%; }
-    .hero .grade { background: linear-gradient(0deg, rgba(8,7,6,.96) 0%, rgba(8,7,6,.75) 48%, rgba(8,7,6,.1) 80%); }
-    .hero-copy { top: auto; bottom: calc(56px + 205px); translate: none; right: var(--gut); }
-    .hero-copy .link { display: none; }
-    .hero-copy p { margin-bottom: 26px; }
-    .hero h1 { font-size: 46px; }
-    .subtitle { bottom: calc(56px + 34px); font-size: 17px; }
-    .gloss { width: 220px; }
-    .credit-mini { display: none; }
-  }
+  /* Hero: collage, then the headline opens around a growing film still */
+  .hero { position: relative; height: 340vh; }
+  .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+  .center { position: absolute; inset: 0; display: grid; place-items: center; z-index: 5; pointer-events: none; }
+  .copy { text-align: center; pointer-events: auto; }
+  .note { font-size: 12.5px; color: var(--t2); margin-bottom: 18px; }
+  .note a { color: var(--gold); margin-left: 6px; }
+  h1 { margin: 0; font: 600 clamp(40px, 5.4vw, 80px)/1.02 var(--f); letter-spacing: -.04em; }
+  h1 .a { display: block; transition: color .3s; }
+  h1 .b { display: flex; justify-content: center; gap: .25em; }
+  h1 .b span { display: inline-block; will-change: transform; }
+  .copy .cta { margin-top: 26px; display: flex; gap: 8px; justify-content: center; }
+  .chip { position: absolute; z-index: 3; will-change: transform, opacity; }
+  .tile { border-radius: 14px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  .tile .ph { width: 100%; height: 100%; }
+  .orb { border-radius: 50%; overflow: hidden; }
+  .orb .ph { width: 100%; height: 100%; filter: blur(1px) brightness(.8); }
+  .gl { width: 220px; padding: 12px 14px; border-radius: 14px; background: rgba(20,19,17,.92); box-shadow: 0 18px 40px rgba(0,0,0,.6), inset 0 0 0 1px rgba(237,232,220,.12); color: var(--cream); font-size: 12px; }
+  .gl b { display: block; font: 600 17px var(--f); color: var(--gold); letter-spacing: -.01em; }
+  .gl .hi { color: #fff; }
+  .gl.sm { width: auto; padding: 8px 12px; font-size: 11.5px; display: flex; gap: 8px; align-items: center; }
+  .gl.sm b { font-size: 13px; display: inline; }
+  .arrow { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.12); backdrop-filter: blur(8px); display: grid; place-items: center; }
+  .works { position: absolute; left: 0; right: 0; bottom: 26px; z-index: 4; text-align: center; will-change: opacity; }
+  .works .cap { color: var(--t3); display: block; margin-bottom: 14px; }
+  .works .row { display: flex; justify-content: center; gap: clamp(22px, 4vw, 56px); font: 700 clamp(15px, 1.5vw, 20px) var(--f); letter-spacing: -.02em; color: #77777d; }
+  .main { position: absolute; z-index: 4; left: 50%; top: 50%; width: 52vw; aspect-ratio: 16/9.4; translate: -50% -50%; border-radius: 16px; overflow: hidden; transform: scale(0); will-change: transform; box-shadow: 0 40px 120px rgba(0,0,0,.7); }
+  .main .ph { position: absolute; inset: 0; filter: brightness(.55); }
+  .main .sub { position: absolute; left: 50%; bottom: 12%; translate: -50% 0; white-space: nowrap; font: 600 clamp(12px, 1.6vw, 22px) "Helvetica Neue", Arial, sans-serif; text-shadow: 0 2px 8px #000; }
+  .main .sub mark { background: var(--gold); color: #000; text-shadow: none; padding: 0 4px; border-radius: 3px; }
+  .main .gl { position: absolute; left: 50%; bottom: 30%; translate: -50% 0; width: min(300px, 46%); }
+  .mos { position: absolute; z-index: 3; border-radius: 14px; overflow: hidden; opacity: 0; will-change: transform, opacity; }
+  .mos .ph { width: 100%; height: 100%; }
+  @media (max-width: 760px) { .chip.hide-m { display: none; } .main { width: 86vw; } .gl { width: 180px; } }
 
-  /* Statement on paper */
-  .paper { background: var(--cream); color: var(--ink); position: relative; }
-  .statement { padding: clamp(110px, 16vw, 200px) 0; }
-  .statement .kicker { color: var(--gold-d); margin-bottom: 34px; display: block; }
-  .statement p.big { font: 300 clamp(30px, 4.2vw, 62px)/1.18 var(--serif); letter-spacing: -.02em; margin: 0; max-width: 1080px; font-variation-settings: "SOFT" 50, "opsz" 96; }
-  .word { position: relative; cursor: help; background: linear-gradient(var(--gold), var(--gold)) 0 92% / 100% .09em no-repeat; transition: background-size .35s; }
-  .word:hover, .word:focus, .word.show { background-size: 100% 100%; outline: none; }
-  .word .tip { position: absolute; left: 50%; bottom: calc(100% + 14px); translate: -50% 0; width: max-content; max-width: 260px; padding: 12px 14px; border-radius: 12px; background: var(--ink); color: #ede8dc; font: 400 13.5px/1.45 var(--sans); letter-spacing: 0; opacity: 0; transform: translateY(6px); transition: .25s; pointer-events: none; z-index: 3; box-shadow: 0 18px 40px rgba(27,25,21,.25); }
-  .word .tip b { display: block; font: 500 18px/1.1 var(--serif); color: var(--gold); margin-bottom: 3px; }
-  .word .tip .hi { color: #fff; }
-  .word:hover .tip, .word:focus .tip, .word.show .tip { opacity: 1; transform: none; }
-  .try { margin-top: 40px; font: 500 14px var(--sans); color: var(--ink2); display: flex; align-items: center; gap: 10px; }
-  .try i { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: pulse 1.6s infinite; }
-  @keyframes pulse { 50% { opacity: .3; } }
+  /* Section heads */
+  .sec { padding: 120px 0; }
+  .head { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; margin-bottom: 44px; }
+  .head h2 { margin: 0; font: 600 clamp(30px, 3.4vw, 48px)/1.05 var(--f); letter-spacing: -.035em; }
+  .head .side { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; justify-self: end; max-width: 380px; }
+  .head p { margin: 0; color: var(--t2); font-size: 14px; }
+  .lab { color: var(--gold); margin-bottom: 14px; display: block; }
+  @media (max-width: 820px) { .head { grid-template-columns: 1fr; gap: 20px; } .head .side { justify-self: start; } }
 
-  /* Three scenes */
-  .scenes { padding: 40px 0 clamp(110px, 14vw, 180px); }
-  .scene { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
-  .scene + .scene { margin-top: clamp(100px, 14vw, 170px); }
-  .scene.flip .still { order: 2; }
-  .still { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 16/10; background: #222; box-shadow: 0 40px 80px rgba(27,25,21,.25); }
-  .still .img { position: absolute; inset: -8% 0; background-size: cover; background-position: center; will-change: transform; }
-  .still .vig { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,.55)); }
-  .still .sc { position: absolute; left: 18px; top: 16px; z-index: 2; font: 500 11px var(--sans); letter-spacing: .16em; color: rgba(255,255,255,.85); text-transform: uppercase; }
-  .still .s-sub { position: absolute; z-index: 2; left: 50%; bottom: 9%; translate: -50% 0; width: 90%; text-align: center; font: 600 clamp(14px, 1.6vw, 21px)/1.3 var(--sub); color: #fff; text-shadow: 0 0 3px #000, 0 2px 8px rgba(0,0,0,.8); }
-  .still .s-sub mark { background: var(--gold); color: var(--ink); text-shadow: none; padding: 0 3px; border-radius: 3px; }
-  .still .rec { position: absolute; right: 16px; top: 14px; z-index: 2; display: flex; align-items: center; gap: 7px; font: 600 11px var(--sans); letter-spacing: .1em; color: #fff; background: rgba(0,0,0,.45); backdrop-filter: blur(6px); padding: 6px 10px; border-radius: 999px; }
-  .still .rec::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #3ddc84; animation: pulse 1.4s infinite; }
-  .card-ui { position: absolute; z-index: 3; left: 50%; top: 9%; translate: -50% 0; width: min(330px, 74%); padding: 16px 18px 14px; border-radius: 16px; background: #141311; color: #ede8dc; box-shadow: 0 24px 70px rgba(0,0,0,.55), inset 0 0 0 1px rgba(237,232,220,.12); font: 400 12.5px/1.45 var(--sans); }
-  .card-ui .w { font: 500 25px/1.1 var(--serif); color: var(--gold); }
-  .card-ui .w i { font: italic 400 12px var(--sans); color: #8a857a; margin-left: 6px; }
-  .card-ui .r { display: flex; gap: 10px; margin-top: 6px; }
-  .card-ui .r b { flex: 0 0 66px; font: 500 9.5px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: #8a857a; padding-top: 3px; }
-  .card-ui .acts { display: flex; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(237,232,220,.1); }
-  .card-ui .acts span { padding: 6px 12px; border-radius: 999px; background: rgba(237,232,220,.1); font: 600 11px var(--sans); }
-  .card-ui .acts span.y { background: var(--gold); color: var(--ink); }
-  .pdf-page { position: absolute; z-index: 3; width: 46%; right: 8%; top: 10%; transform: rotate(3deg); box-shadow: 0 30px 60px rgba(0,0,0,.45); border-radius: 3px; }
-  .s-text .num { font: italic 300 clamp(64px, 7vw, 104px)/.8 var(--serif); color: var(--gold-d); display: block; margin-bottom: 22px; }
-  .s-text h2 { font: 400 clamp(32px, 3.6vw, 52px)/1.06 var(--serif); letter-spacing: -.025em; margin: 0 0 18px; font-variation-settings: "SOFT" 50, "opsz" 96; }
-  .s-text h2 em { font-style: italic; }
-  .s-text p { color: var(--ink2); margin: 0; max-width: 440px; }
-  @media (max-width: 860px) { .still .sc { display: none; } .scene { grid-template-columns: 1fr; gap: 28px; } .scene.flip .still { order: 0; } .card-ui { font-size: 11px; padding: 12px 14px; top: 8%; } .card-ui .w { font-size: 19px; } .card-ui .r:nth-of-type(4), .card-ui .acts { display: none; } }
+  /* Word-list cards row */
+  .rowcards { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 6px; }
+  .rowcards::-webkit-scrollbar { display: none; }
+  .lc { flex: 0 0 clamp(270px, 24vw, 330px); scroll-snap-align: start; border-radius: 16px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); padding: 14px; }
+  .lc .top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .lc .av { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex: none; }
+  .lc .av .ph { width: 100%; height: 100%; }
+  .lc .top b { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+  .lc .top small { margin-left: auto; color: var(--t3); }
+  .lc .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .lc .st { border-radius: 10px; background: var(--card2); padding: 12px; }
+  .lc .st b { display: block; font: 600 22px/1 var(--f); letter-spacing: -.03em; margin-bottom: 6px; }
+  .lc .st span { color: var(--t3); }
+  .lc .words { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .lc .words i { font-style: normal; font-size: 12px; padding: 4px 9px; border-radius: 999px; background: rgba(242,201,76,.12); color: var(--gold); }
+  .navbtns { display: flex; gap: 6px; }
+  .navbtns button { all: unset; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: #000; display: grid; place-items: center; }
 
-  /* Try it */
-  .tryit { padding: clamp(110px, 14vw, 180px) 0; overflow: hidden; }
-  .tryit-head { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; margin-bottom: 48px; }
-  .tryit-head .kicker { color: var(--gold); display: block; margin-bottom: 22px; }
-  .tryit h2 { font: 300 clamp(38px, 5vw, 76px)/1 var(--serif); letter-spacing: -.03em; margin: 0; font-variation-settings: "SOFT" 50, "opsz" 144; }
-  .tryit h2 em { font-style: italic; color: var(--gold); }
-  .tryit-head p { color: rgba(244,239,230,.7); margin: 0; max-width: 440px; justify-self: end; }
-  @media (max-width: 860px) { .tryit-head { grid-template-columns: 1fr; } .tryit-head p { justify-self: start; } }
-  .player { position: relative; aspect-ratio: 21/9; border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 60px 140px rgba(0,0,0,.7), 0 0 0 1px rgba(244,239,230,.08); user-select: none; -webkit-user-select: none; }
-  .player .img { position: absolute; inset: 0; background: url("https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2200&q=80&auto=format&fit=crop") center 60% / cover; filter: brightness(.45) saturate(.85); }
-  .player .paused { position: absolute; left: 24px; top: 20px; font: 500 11px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.75); display: flex; gap: 10px; align-items: center; }
-  .player .paused::before { content: ""; width: 10px; height: 12px; border-inline: 3.5px solid currentColor; box-sizing: border-box; }
-  .player .bar { position: absolute; left: 24px; right: 24px; bottom: 20px; height: 3px; background: rgba(255,255,255,.2); border-radius: 2px; }
-  .player .bar b { position: absolute; inset: 0 61% 0 0; background: #fff; border-radius: 2px; }
-  .p-sub { position: absolute; left: 50%; bottom: 17%; translate: -50% 0; width: 92%; text-align: center; }
-  .p-sub .box { display: inline-block; padding: 12px 22px 14px; border-radius: 14px; background: rgba(20,19,17,.82); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
-  .p-sub small { display: block; font: 500 9.5px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
-  .p-sub .line { font: 600 clamp(15px, 2.1vw, 28px)/1.4 var(--sub); color: #fff; touch-action: none; }
-  .p-sub .t { cursor: pointer; border-radius: 3px; padding: 0 1px; transition: background .2s, color .2s; }
-  .p-sub .t:hover { background: rgba(242,201,76,.25); }
-  .p-sub .t.sel { background: var(--gold); color: var(--ink); }
-  .p-card { position: absolute; z-index: 3; width: min(330px, 80%); padding: 16px 18px 14px; border-radius: 16px; background: #141311; color: #ede8dc; box-shadow: 0 24px 70px rgba(0,0,0,.6), inset 0 0 0 1px rgba(237,232,220,.14); font: 400 13px/1.45 var(--sans); opacity: 0; transform: translateY(8px); transition: opacity .25s, transform .25s; pointer-events: none; }
-  .p-card.on { opacity: 1; transform: none; pointer-events: auto; }
-  .p-card .w { font: 500 25px/1.1 var(--serif); color: var(--gold); padding-right: 20px; }
-  .p-card .w i { font: italic 400 12px var(--sans); color: #8a857a; margin-left: 6px; }
-  .p-card .r { display: flex; gap: 10px; margin-top: 6px; }
-  .p-card .r b { flex: 0 0 66px; font: 500 9.5px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: #8a857a; padding-top: 3px; }
-  .p-card .note { color: #a8a296; margin-top: 4px; }
-  .p-card .acts { display: flex; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(237,232,220,.1); }
-  .p-card .acts button { all: unset; cursor: pointer; padding: 6px 12px; border-radius: 999px; background: rgba(237,232,220,.1); font: 600 11.5px var(--sans); }
-  .p-card .acts button.y { background: var(--gold); color: var(--ink); }
-  .p-card .x { all: unset; cursor: pointer; position: absolute; right: 12px; top: 8px; font-size: 20px; color: #8a857a; }
-  .hint-row { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 22px; font-size: 14px; color: rgba(244,239,230,.6); }
-  .hint-row b { color: var(--cream); font-weight: 500; }
-  @media (max-width: 760px) { .player { aspect-ratio: 4/5; } .p-sub { bottom: 12%; } }
+  /* Genre wheel over a photo */
+  .genres { height: 280vh; position: relative; }
+  .gpin { position: sticky; top: 0; height: 100svh; padding: 70px var(--gut) var(--gut); }
+  .gbox { position: relative; height: 100%; border-radius: 18px; overflow: hidden; }
+  .gbox .ph { position: absolute; inset: 0; transition: opacity .6s; }
+  .gbox .ph.on { opacity: 1; } .gbox .ph:not(.on) { opacity: 0; }
+  .gbox .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.75), rgba(0,0,0,.15) 45%, rgba(0,0,0,.7)); }
+  .gleft { position: absolute; left: 32px; bottom: 32px; z-index: 2; max-width: 300px; }
+  .gleft h2 { font: 600 clamp(26px, 2.8vw, 40px)/1.05 var(--f); letter-spacing: -.035em; margin: 0 0 10px; }
+  .gleft p { color: rgba(255,255,255,.75); margin: 0 0 16px; font-size: 13.5px; }
+  .gword { margin-top: 18px; display: inline-flex; flex-direction: column; padding: 12px 14px; border-radius: 12px; background: rgba(20,19,17,.85); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); min-width: 220px; }
+  .gword b { font: 600 18px var(--f); color: var(--gold); }
+  .gword span { font-size: 12.5px; color: var(--cream); }
+  .wheel { position: absolute; right: 36px; top: 0; bottom: 0; width: 50%; z-index: 2; mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); -webkit-mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); }
+  .wheel ul { list-style: none; margin: 0; padding: 0; position: absolute; right: 0; top: 50%; will-change: transform; }
+  .wheel li { height: 66px; display: flex; align-items: center; justify-content: flex-end; font: 500 clamp(32px, 4vw, 56px)/1 var(--f); letter-spacing: -.04em; color: rgba(255,255,255,.3); transition: color .3s; }
+  .wheel li.on { color: #fff; }
+  @media (max-width: 760px) { .wheel { width: 100%; right: 20px; } .wheel li { height: 52px; } .gleft { left: 18px; right: 18px; bottom: 18px; } }
 
-  /* Details */
-  .details { padding: clamp(110px, 14vw, 170px) 0; }
-  .details-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(40px, 6vw, 100px); align-items: start; }
-  .details h2 { font: 300 clamp(38px, 4.6vw, 68px)/1.02 var(--serif); letter-spacing: -.03em; margin: 0; position: sticky; top: 60px; font-variation-settings: "SOFT" 50, "opsz" 144; }
-  .details h2 em { font-style: italic; }
-  .dl-list { border-top: 1px solid var(--line-l); }
-  .dl-item { display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--line-l); }
-  .dl-item h3 { margin: 0; font: 500 20px/1.25 var(--serif); }
-  .dl-item p { margin: 0; color: var(--ink2); }
-  @media (max-width: 860px) { .details-grid { grid-template-columns: 1fr; } .details h2 { position: static; } .dl-item { grid-template-columns: 1fr; gap: 6px; } }
+  /* Product stage with floating stats */
+  .prod { padding: 140px 0 120px; text-align: center; position: relative; overflow: hidden; }
+  .prod::before { content: ""; position: absolute; left: 50%; top: 58%; width: 1300px; height: 900px; translate: -50% -50%; background: radial-gradient(closest-side, rgba(146,94,18,.55), rgba(70,40,8,.25) 55%, transparent); pointer-events: none; }
+  .prod h2 { position: relative; margin: 0 0 16px; font: 600 clamp(32px, 3.8vw, 54px)/1.04 var(--f); letter-spacing: -.035em; }
+  .prod .pill { position: relative; }
+  .phones { position: relative; display: flex; justify-content: center; align-items: flex-end; gap: 18px; margin-top: 60px; }
+  .phone { width: 250px; border-radius: 30px; background: #0d0d0e; padding: 10px; box-shadow: 0 40px 100px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.12); text-align: left; }
+  .phone .scr { border-radius: 22px; overflow: hidden; height: 470px; position: relative; background: #111; }
+  .phone.mid { width: 280px; }
+  .phone.mid .scr { height: 540px; }
+  .phone .ph { position: absolute; inset: 0; }
+  .scr .shade { position: absolute; inset: 0; background: linear-gradient(transparent 30%, rgba(0,0,0,.85)); }
+  .scr .ttl { position: absolute; left: 16px; right: 16px; bottom: 16px; }
+  .scr .ttl b { display: block; font: 600 20px/1.1 var(--f); letter-spacing: -.02em; }
+  .scr .ttl b em { font-style: normal; color: var(--gold); }
+  .scr .ttl .tags { display: flex; gap: 6px; margin-top: 10px; }
+  .scr .ttl .tags span { font-size: 11px; padding: 4px 9px; border-radius: 999px; background: rgba(255,255,255,.14); }
+  .scr .ttl .tags span.y { background: var(--gold); color: #000; font-weight: 600; }
+  .scr .gl { position: absolute; left: 12px; right: 12px; top: 18%; width: auto; }
+  .scr .pdf { position: absolute; inset: 16px 16px auto; border-radius: 6px; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+  .pop { position: absolute; inset: 0; background: #f4efe6; color: #141311; padding: 20px 16px; font-size: 12px; }
+  .pop h4 { margin: 0 0 14px; display: flex; align-items: center; gap: 8px; font: 600 18px var(--f); }
+  .pop h4 svg { width: 22px; height: 22px; }
+  .pop .sel { border: 1px solid rgba(20,19,17,.12); background: #fff; border-radius: 9px; padding: 8px 10px; margin-bottom: 12px; }
+  .pop .tg { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid rgba(20,19,17,.1); }
+  .pop .tg i { width: 30px; height: 18px; border-radius: 999px; background: #141311; position: relative; }
+  .pop .tg i::after { content: ""; position: absolute; right: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); }
+  .pop .tg i.off { background: rgba(20,19,17,.2); }
+  .pop .tg i.off::after { right: auto; left: 2px; background: #fff; }
+  .pop .mv { padding: 10px 0; border-top: 1px solid rgba(20,19,17,.1); }
+  .pop .mv b { display: block; font-size: 13px; }
+  .pop .mv small { color: #7a756b; }
+  .pop .mv .btn { display: inline-block; margin-top: 6px; background: #141311; color: #f4efe6; border-radius: 999px; padding: 5px 11px; font-weight: 600; font-size: 11px; }
+  .stat { position: absolute; z-index: 2; padding: 12px 16px; border-radius: 14px; background: rgba(15,15,16,.85); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px var(--line); text-align: left; }
+  .stat b { display: block; font: 600 26px/1 var(--f); letter-spacing: -.03em; }
+  .stat span { color: var(--t2); }
+  @media (max-width: 900px) { .phone:not(.mid) { display: none; } .stat { display: none; } }
 
-  /* Install */
-  .install { padding: 0 0 clamp(110px, 14vw, 170px); }
-  .install-box { border-radius: 24px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line-l); padding: clamp(32px, 5vw, 64px); display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(30px, 5vw, 80px); align-items: start; }
-  .install-box h2 { font: 300 clamp(34px, 3.8vw, 54px)/1.04 var(--serif); letter-spacing: -.025em; margin: 0 0 18px; }
-  .install-box h2 em { font-style: italic; }
-  .install-box p.lead { color: var(--ink2); margin: 0 0 30px; }
-  ol.steps { list-style: none; counter-reset: s; margin: 0; padding: 0; }
-  ol.steps li { counter-increment: s; display: grid; grid-template-columns: 52px 1fr; padding: 20px 0; border-bottom: 1px solid var(--line-l); }
-  ol.steps li:first-child { padding-top: 4px; }
-  ol.steps li::before { content: counter(s); font: italic 300 34px/1 var(--serif); color: var(--gold-d); }
-  ol.steps b { display: block; font-weight: 600; margin-bottom: 2px; }
-  ol.steps span { color: var(--ink2); }
-  code { font: 500 13.5px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--cream2); padding: 2px 7px; border-radius: 5px; color: var(--ink); }
-  .btn.dark { background: var(--ink); color: var(--cream); box-shadow: 0 10px 30px rgba(27,25,21,.18); }
-  @media (max-width: 860px) { .install-box { grid-template-columns: 1fr; } }
+  /* Feature cards */
+  .fcards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .fc { border-radius: 16px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+  .fc .top { padding: 18px 18px 0; display: flex; justify-content: space-between; align-items: center; }
+  .fc .top b { font: 600 17px var(--f); letter-spacing: -.02em; }
+  .fc .top i { width: 28px; height: 28px; border-radius: 50%; background: var(--gold); color: #000; display: grid; place-items: center; font-style: normal; font-weight: 700; transition: transform .3s; }
+  .fc:hover .top i { transform: rotate(45deg); }
+  .fc p { margin: 6px 18px 0; color: var(--t2); font-size: 13.5px; }
+  .fc .viz { height: 240px; margin-top: 18px; position: relative; overflow: hidden; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 120%, rgba(146,94,18,.4), transparent 70%); }
+  .msub { font: 600 16px "Helvetica Neue", Arial, sans-serif; padding: 10px 16px; border-radius: 10px; background: rgba(20,19,17,.9); box-shadow: inset 0 0 0 1px var(--line); }
+  .msub mark { background: var(--gold); color: #000; border-radius: 3px; padding: 0 3px; }
+  .mcur { position: absolute; width: 18px; left: 60%; top: 58%; animation: tap 3s ease-in-out infinite; }
+  @keyframes tap { 0%, 100% { transform: translate(30px, 26px); } 40%, 60% { transform: none; } 50% { transform: scale(.85); } }
+  .langs { display: grid; gap: 8px; width: 78%; }
+  .langs div { display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: var(--card2); box-shadow: inset 0 0 0 1px var(--line); }
+  .langs small { color: var(--t3); }
+  .wave { display: flex; align-items: center; gap: 4px; height: 60px; width: 80%; }
+  .wave i { flex: 1; border-radius: 3px; background: var(--gold); height: 30%; animation: wv 1.2s ease-in-out infinite; animation-delay: calc(var(--i) * -.07s); }
+  @keyframes wv { 50% { height: 100%; } }
+  @media (max-width: 900px) { .fcards { grid-template-columns: 1fr; } }
+
+  /* Dashboard */
+  .dash { margin-top: 50px; border-radius: 14px; background: #0b0b0c; box-shadow: 0 40px 100px rgba(0,0,0,.6), inset 0 0 0 1px var(--line); overflow: hidden; }
+  .dash .bar { height: 38px; display: flex; align-items: center; gap: 7px; padding: 0 14px; border-bottom: 1px solid var(--line); }
+  .dash .bar i { width: 10px; height: 10px; border-radius: 50%; background: #333; }
+  .dash .bar span { margin: 0 auto; font-size: 11px; color: var(--t3); background: #161618; padding: 3px 80px; border-radius: 6px; }
+  .dash .body { padding: 22px 26px 26px; }
+  .dash h4 { margin: 0 0 4px; font: 600 15px var(--f); }
+  .dash .sub2 { color: var(--t3); font-size: 12px; margin-bottom: 18px; }
+  .tiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 18px; }
+  .tiles div { border-radius: 10px; background: var(--card2); padding: 12px; }
+  .tiles span { display: block; color: var(--t3); font-size: 11px; margin-bottom: 8px; }
+  .tiles b { font: 600 20px var(--f); letter-spacing: -.02em; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { text-align: left; font-weight: 500; color: var(--t3); padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  td { padding: 11px 10px; border-bottom: 1px solid var(--line); color: #d8d8dc; }
+  td .thumb { width: 38px; height: 24px; border-radius: 4px; display: inline-block; vertical-align: middle; margin-right: 10px; }
+  td .ok { color: var(--green); }
+  @media (max-width: 900px) { .tiles { grid-template-columns: repeat(3, 1fr); } .dash .hide-m { display: none; } .dash .body { padding: 16px; } }
+
+  /* Open card */
+  .open { margin-top: 120px; border-radius: 18px; padding: 90px 30px; text-align: center; background: radial-gradient(ellipse at 50% 0%, #3a3a3d, #141415 70%); box-shadow: inset 0 0 0 1px var(--line); }
+  .open .cap { color: var(--t2); display: block; margin-bottom: 14px; }
+  .open h2 { margin: 0 0 22px; font: 600 clamp(28px, 3.2vw, 46px)/1.08 var(--f); letter-spacing: -.035em; }
+
+  /* Example stacks */
+  .stack { display: grid; gap: 14px; }
+  .ex { display: grid; grid-template-columns: 1fr 1fr; border-radius: 16px; overflow: hidden; min-height: 300px; background: linear-gradient(90deg, #120d06, #2a1a05); box-shadow: inset 0 0 0 1px var(--line); }
+  .ex .ph { min-height: 260px; }
+  .ex .t { padding: 34px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 18px; }
+  .ex h3 { margin: 0; font: 600 clamp(22px, 2.2vw, 30px)/1.15 var(--f); letter-spacing: -.03em; }
+  .ex h3 em { font-style: normal; color: var(--gold); }
+  .ex .words { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ex .words i { font-style: normal; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.08); }
+  .readall { margin-top: 14px; display: flex; justify-content: space-between; align-items: center; padding: 22px 26px; border-radius: 16px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); font-size: 16px; font-weight: 500; }
+  @media (max-width: 760px) { .ex { grid-template-columns: 1fr; } .ex .t { padding: 22px; } }
+
+  /* Updates */
+  .ups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .up { display: block; border-radius: 14px; overflow: hidden; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); transition: transform .3s; }
+  .up:hover { transform: translateY(-4px); }
+  .up .ph { aspect-ratio: 16/10; }
+  .up .t { padding: 16px; }
+  .up .t .cap { color: var(--gold); display: block; margin-bottom: 8px; }
+  .up .t b { font: 600 16px/1.3 var(--f); letter-spacing: -.01em; }
+  @media (max-width: 900px) { .ups { grid-template-columns: 1fr; } }
 
   /* FAQ */
-  .faq { padding: 0 0 clamp(110px, 14vw, 170px); }
-  .faq-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(40px, 6vw, 100px); }
-  .faq h2 { font: 300 clamp(38px, 4.6vw, 68px)/1.02 var(--serif); letter-spacing: -.03em; margin: 0; }
-  .faq h2 em { font-style: italic; }
-  details { border-bottom: 1px solid var(--line-l); }
-  details:first-of-type { border-top: 1px solid var(--line-l); }
-  summary { list-style: none; cursor: pointer; padding: 24px 0; font: 400 21px/1.3 var(--serif); display: flex; justify-content: space-between; gap: 20px; }
+  .faq { text-align: center; }
+  .faq h2 { margin: 0 0 34px; font: 600 clamp(30px, 3.4vw, 48px)/1.05 var(--f); letter-spacing: -.035em; }
+  .faq .list { max-width: 640px; margin: 0 auto; display: grid; gap: 8px; text-align: left; }
+  details { border-radius: 14px; background: var(--card2); box-shadow: inset 0 0 0 1px var(--line); }
+  summary { list-style: none; cursor: pointer; padding: 14px 16px; display: flex; gap: 12px; align-items: center; font-size: 14px; font-weight: 500; }
   summary::-webkit-details-marker { display: none; }
-  summary::after { content: "+"; font: 300 26px/1 var(--sans); color: var(--gold-d); transition: transform .3s; }
-  details[open] summary::after { transform: rotate(45deg); }
-  details p { margin: 0 0 24px; color: var(--ink2); max-width: 620px; }
-  @media (max-width: 860px) { .faq-grid { grid-template-columns: 1fr; } }
+  summary i { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--gold); color: #000; display: grid; place-items: center; font-style: normal; font-weight: 700; font-size: 14px; transition: transform .3s; }
+  details[open] summary i { transform: rotate(45deg); }
+  details p { margin: 0; padding: 0 16px 16px 48px; color: var(--t2); font-size: 14px; }
 
-  /* Finale + end credits */
-  .finale { position: relative; min-height: 92svh; display: grid; place-items: center; text-align: center; overflow: hidden; background: #000; }
-  .finale .img { position: absolute; inset: -8% 0; background: url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=2200&q=80&auto=format&fit=crop") center / cover; filter: brightness(.55); will-change: transform; }
-  .finale .shade { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(0,0,0,.2), rgba(0,0,0,.85) 75%); }
-  .finale .in { position: relative; z-index: 2; padding: 0 var(--gut); }
-  .finale .kicker { color: var(--gold); display: block; margin-bottom: 26px; }
-  .finale h2 { font: 300 clamp(48px, 8vw, 128px)/.95 var(--serif); letter-spacing: -.04em; margin: 0 0 40px; font-variation-settings: "SOFT" 50, "opsz" 144; }
-  .finale h2 em { font-style: italic; color: var(--gold); }
-  .credits { padding: 110px 0 60px; text-align: center; background: #000; }
-  .credits .role { font: 500 11px var(--sans); letter-spacing: .2em; text-transform: uppercase; color: #8b8478; margin-bottom: 8px; }
-  .credits .name { font: 300 clamp(22px, 2.4vw, 30px)/1.3 var(--serif); margin-bottom: 40px; }
-  .credits .name a { border-bottom: 1px solid rgba(244,239,230,.25); }
-  .credits .name a:hover { border-color: var(--gold); }
-  .credits .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 320px)); justify-content: center; gap: 0 60px; }
-  .credits .end { font: italic 300 clamp(40px, 5vw, 64px)/1 var(--serif); color: var(--gold); margin: 50px 0 60px; }
-  .legal { color: #6f695f; font-size: 12.5px; max-width: 720px; margin: 0 auto; line-height: 1.6; }
+  /* Final */
+  .final { padding: 120px 0 0; text-align: center; overflow: hidden; }
+  .final h2 { margin: 0 0 20px; font: 600 clamp(40px, 5.6vw, 84px)/1 var(--f); letter-spacing: -.045em; }
+  .strip { position: relative; height: 300px; margin-top: 60px; }
+  .strip .s { position: absolute; border-radius: 14px; overflow: hidden; }
+  .strip .s .ph { width: 100%; height: 100%; }
+  footer { padding: 60px 0 40px; border-top: 1px solid var(--line); margin-top: 40px; }
+  .fgrid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 30px; }
+  .fgrid h4 { margin: 0 0 14px; color: var(--t3); }
+  .fgrid a { display: block; color: #cfcfd4; font-size: 13.5px; margin-bottom: 8px; }
+  .fgrid a:hover { color: #fff; }
+  .fgrid p { color: var(--t2); font-size: 13px; max-width: 260px; margin: 12px 0 0; }
+  .legal { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--t3); font-size: 12px; display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
   .legal a { text-decoration: underline; }
-  @media (max-width: 640px) { .credits .pair { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .fgrid { grid-template-columns: 1fr 1fr; } .fgrid > div:first-child { grid-column: 1 / -1; } .strip { height: 200px; } }
 
-  .reveal { opacity: 0; transform: translateY(34px); transition: opacity 1.1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0s); }
-  .reveal.in { opacity: 1; transform: none; }
-  .no-js .reveal, .no-js .fadein { opacity: 1; transform: none; }
+  .rv { opacity: 0; transform: translateY(28px); transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0s); }
+  .rv.in { opacity: 1; transform: none; }
+  .no-js .rv { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-    .reveal, .fadein { opacity: 1; transform: none; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .rv { opacity: 1; transform: none; }
   }
 </style>
 </head>
 <body class="no-js">
 
-<header class="hero grain" id="top">
-  <div class="photo" role="img" aria-label="A woman watching a film on her laptop late at night, holding a mug"></div>
-  <div class="grade"></div>
-  <div class="letterbox top"></div><div class="letterbox bot"></div>
-  <div class="hero-nav">
-    <a class="logo" href="#top"><svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#f4efe6"/><rect x="26" y="45" width="76" height="10" rx="5" fill="#141311" opacity=".4"/><rect x="26" y="69" width="24" height="10" rx="5" fill="#141311"/><rect x="56" y="64" width="46" height="20" rx="6" fill="#F2C94C"/></svg>Glossa</a>
-    <nav><a href="#how">How it works</a><a href="#try">Try it</a><a href="#install">Install</a><a class="dl" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip">Download</a></nav>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#ede8dc"/><rect x="26" y="45" width="76" height="10" rx="5" fill="#141311" opacity=".4"/><rect x="26" y="69" width="24" height="10" rx="5" fill="#141311"/><rect x="56" y="64" width="46" height="20" rx="6" fill="#F2C94C"/></svg>Glossa</a>
+    <nav class="cap"><a href="#product">Product</a><a href="#examples">Examples</a><a href="#faq">FAQ</a></nav>
+    <div class="r cap"><a class="gh" href="https://github.com/kunalsharmavlog-hue/glossa">GitHub</a><a class="pill" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><span>Download</span><span>Download</span></a></div>
   </div>
-  <div class="hero-copy">
-    <div class="kicker fadein" style="--d:.6s">A Chrome extension for Netflix</div>
-    <h1 class="fadein" style="--d:.75s">Understand every word of the <em>film.</em></h1>
-    <p class="fadein" style="--d:.95s">Pause, click any word in the subtitle, and see what it means in English, Hindi and Hinglish. When the credits roll, your word list is waiting.</p>
-    <div class="row fadein" style="--d:1.1s">
-      <a class="btn" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 20h14"/></svg>Add to Chrome, it's free</a>
-      <a class="link" href="#try">Try it right here ↓</a>
-    </div>
-  </div>
-  <div class="subtitle" id="heroSub" aria-live="polite"></div>
-  <div class="credit-mini">Photo: Anastasiia Nelen / Unsplash</div>
 </header>
 
-<main>
-  <section class="paper statement">
+<main id="top">
+  <section class="hero" id="hero">
+    <div class="stage" id="stage">
+      <!-- Collage around the headline -->
+      <div class="chip tile" data-c style="left:3%;top:16%;width:150px;height:190px;--dx:-60;--dy:-40;transform:rotate(-4deg)"><div class="ph" data-img="1655057011043-158c48f3809d" data-w="400"></div></div>
+      <div class="chip arrow hide-m" data-c style="left:14%;top:44%;--dx:-40;--dy:0">↗</div>
+      <div class="chip orb hide-m" data-c style="left:6%;top:56%;width:120px;height:120px;--dx:-60;--dy:30"><div class="ph" data-img="1574267432553-4b4628081c31" data-w="300"></div></div>
+      <div class="chip gl hide-m" data-c style="left:5%;bottom:20%;--dx:-50;--dy:40"><b>reluctant</b>not wanting to do something<br><span class="hi">अनिच्छुक</span></div>
+      <div class="chip orb" data-c style="left:42%;top:-6%;width:300px;height:300px;--dx:0;--dy:-60"><div class="ph" data-img="1485095329183-d0797cdc5676" data-w="600" style="filter:brightness(.55)"></div></div>
+      <div class="chip gl sm hide-m" data-c style="left:58%;top:24%;--dx:20;--dy:-40"><b>naive</b><span class="hi">भोला</span> · bhola</div>
+      <div class="chip tile" data-c style="right:4%;top:12%;width:170px;height:120px;--dx:60;--dy:-40;transform:rotate(3deg)"><div class="ph" data-img="1489599849927-2ee91cede3ba" data-w="400"></div></div>
+      <div class="chip orb hide-m" data-c style="right:9%;top:40%;width:84px;height:84px;--dx:50;--dy:0"><div class="ph" data-img="1540842246364-f7cf19d24e73" data-w="200"></div></div>
+      <div class="chip tile hide-m" data-c style="right:3%;bottom:24%;width:190px;height:140px;--dx:60;--dy:40;transform:rotate(-2deg)"><div class="ph" data-img="1517604931442-7e0c8ed2963c" data-w="400"></div></div>
+      <div class="chip gl hide-m" data-c style="right:16%;bottom:13%;--dx:40;--dy:50"><b>piece of cake</b>something very easy<br><span class="hi">बाएँ हाथ का खेल</span></div>
+      <div class="chip arrow hide-m" data-c style="left:28%;bottom:16%;--dx:-30;--dy:50">↙</div>
+
+      <!-- Mosaic that frames the film still at the end -->
+      <div class="mos" data-m style="left:2%;top:10%;width:22%;height:38%"><div class="ph" data-img="1632366989362-b7e202cb4fdf" data-w="600"></div></div>
+      <div class="mos" data-m style="left:2%;top:52%;width:22%;height:38%"><div class="ph" data-img="1706594366597-7c529d986768" data-w="600"></div></div>
+      <div class="mos" data-m style="right:2%;top:10%;width:22%;height:24%"><div class="ph" data-img="1574267432553-4b4628081c31" data-w="600"></div></div>
+      <div class="mos" data-m style="right:2%;top:38%;width:22%;height:24%"><div class="ph" data-img="1634651754953-1565eca58d5c" data-w="600"></div></div>
+      <div class="mos" data-m style="right:2%;top:66%;width:22%;height:24%"><div class="ph" data-img="1577979749830-f1d742b96791" data-w="600"></div></div>
+      <div class="mos" data-m style="left:26%;top:78%;width:48%;height:12%"><div class="ph" data-img="1451226428352-cf66bf8a0317" data-w="900"></div></div>
+
+      <div class="main" id="main">
+        <div class="ph" data-img="1650476110251-be9128fb1e40" data-w="1600"></div>
+        <div class="gl"><b>ambiguous</b>having more than one possible meaning<br><span class="hi">अस्पष्ट · aspasht</span></div>
+        <div class="sub">The evidence is <mark>ambiguous</mark>.</div>
+      </div>
+
+      <div class="center">
+        <div class="copy" id="copy">
+          <div class="note" id="note">New in v1.2: Pause &amp; Pick is here<a href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest">See what's new</a></div>
+          <h1><span class="a" id="la">Learn English</span><span class="b"><span id="lb1">from every</span><span id="lb2">movie</span></span></h1>
+          <div class="cta" id="cta"><a class="pill" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><span>Add to Chrome</span><span>Add to Chrome</span></a></div>
+        </div>
+      </div>
+      <div class="works" id="works"><span class="cap">Works in</span><div class="row"><span>Chrome</span><span>Edge</span><span>Brave</span><span>Arc</span><span>Opera</span></div></div>
+    </div>
+  </section>
+
+  <section class="sec" id="product">
     <div class="wrap">
-      <span class="kicker reveal">Why Glossa</span>
-      <p class="big reveal">Every film is full of words you <span class="word" tabindex="0">almost<span class="tip"><b>almost</b>nearly, but not completely · <span class="hi">लगभग</span></span></span> understood. You hear them, guess from the scene, and let them <span class="word" tabindex="0">slip<span class="tip"><b>slip</b>to go away without being noticed · <span class="hi">फिसलना</span></span></span> by. Glossa catches each one, explains it in a language that feels like home, and keeps it for you. No flashcards. No <span class="word" tabindex="0">tedious<span class="tip"><b>tedious</b>long and boring · <span class="hi">उबाऊ</span></span></span> apps. Just the films you already love.</p>
-      <div class="try reveal"><i></i>Hover over the underlined words. That is how Glossa feels.</div>
+      <div class="head">
+        <div><span class="cap lab rv">Word lists</span><h2 class="rv">Every film leaves you<br>with a list worth keeping</h2></div>
+        <div class="side rv"><p>Glossa collects the hard words from each film as you watch, with meanings and the line they came from. These are example lists from different kinds of films.</p><div style="display:flex;gap:10px;align-items:center;width:100%;justify-content:space-between"><a class="pill" href="#examples"><span>See examples</span><span>See examples</span></a><div class="navbtns"><button data-d="-1" aria-label="Previous">‹</button><button data-d="1" aria-label="Next">›</button></div></div></div>
+      </div>
+      <div class="rowcards rv" id="rowcards">
+        <div class="lc"><div class="top"><div class="av"><div class="ph" data-img="1706594366597-7c529d986768" data-w="100"></div></div><b>Crime drama</b><small class="cap">Example</small></div><div class="stats"><div class="st"><b>42</b><span class="cap">Hard words</span></div><div class="st"><b>6</b><span class="cap">Your picks</span></div></div><div class="words"><i>alibi</i><i>flimsy</i><i>verdict</i></div></div>
+        <div class="lc"><div class="top"><div class="av"><div class="ph" data-img="1632366989362-b7e202cb4fdf" data-w="100"></div></div><b>Family sitcom</b><small class="cap">Example</small></div><div class="stats"><div class="st"><b>27</b><span class="cap">Hard words</span></div><div class="st"><b>4</b><span class="cap">Your picks</span></div></div><div class="words"><i>awkward</i><i>bicker</i><i>sulk</i></div></div>
+        <div class="lc"><div class="top"><div class="av"><div class="ph" data-img="1577979749830-f1d742b96791" data-w="100"></div></div><b>Nature documentary</b><small class="cap">Example</small></div><div class="stats"><div class="st"><b>51</b><span class="cap">Hard words</span></div><div class="st"><b>9</b><span class="cap">Your picks</span></div></div><div class="words"><i>habitat</i><i>prey</i><i>dormant</i></div></div>
+        <div class="lc"><div class="top"><div class="av"><div class="ph" data-img="1634651754953-1565eca58d5c" data-w="100"></div></div><b>Thriller</b><small class="cap">Example</small></div><div class="stats"><div class="st"><b>38</b><span class="cap">Hard words</span></div><div class="st"><b>5</b><span class="cap">Your picks</span></div></div><div class="words"><i>ominous</i><i>lure</i><i>sinister</i></div></div>
+        <div class="lc"><div class="top"><div class="av"><div class="ph" data-img="1485095329183-d0797cdc5676" data-w="100"></div></div><b>Period romance</b><small class="cap">Example</small></div><div class="stats"><div class="st"><b>46</b><span class="cap">Hard words</span></div><div class="st"><b>7</b><span class="cap">Your picks</span></div></div><div class="words"><i>courtship</i><i>yearn</i><i>dowry</i></div></div>
+      </div>
     </div>
   </section>
 
-  <section class="paper scenes" id="how">
+  <section class="genres" id="genres">
+    <div class="gpin">
+      <div class="gbox" id="gbox">
+        <div class="shade" style="z-index:1"></div>
+        <div class="gleft"><h2>Every genre teaches different words</h2><p>Crime dramas teach legal words, sitcoms teach everyday slang, documentaries teach science.</p><a class="pill" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><span>Get started</span><span>Get started</span></a><div><div class="gword" id="gword"><b>alibi</b><span>proof that you were somewhere else</span></div></div></div>
+        <div class="wheel"><ul id="wheel"></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="prod">
     <div class="wrap">
-      <div class="scene">
-        <div class="still reveal">
-          <div class="img" data-parallax style="background-image:url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1600&q=80&auto=format&fit=crop')"></div><div class="vig"></div>
-          <span class="sc">Scene 01</span><span class="rec">Glossa is listening</span>
-          <div class="s-sub">Nobody leaves this room until we have a plan.</div>
+      <h2 class="rv">Pause, pick,<br>understand and keep</h2>
+      <a class="pill rv" href="#how"><span>How it works</span><span>How it works</span></a>
+      <div class="phones" id="how">
+        <div class="stat rv" style="left:6%;top:14%"><b>1</b><span class="cap">Click</span></div>
+        <div class="stat rv" style="left:12%;top:58%"><b>3</b><span class="cap">Languages</span></div>
+        <div class="stat rv" style="right:8%;top:20%"><b>0</b><span class="cap">Sign-ups</span></div>
+        <div class="stat rv" style="right:4%;top:62%"><b>MIT</b><span class="cap">Open source</span></div>
+        <div class="phone rv">
+          <div class="scr"><div class="ph" data-img="1650476110251-be9128fb1e40" data-w="600" style="filter:brightness(.45)"></div>
+            <div class="gl"><b>reluctant</b>not wanting to do something<br><span class="hi">अनिच्छुक · anichchhuk</span></div>
+            <div class="shade"></div><div class="ttl"><b><em>Pause</em> &amp; Pick</b><div class="tags"><span class="y">Word</span><span>Phrase</span><span>Line</span></div></div></div>
         </div>
-        <div class="s-text reveal" style="--d:.1s">
-          <span class="num">i.</span>
-          <h2>Press play, the way you <em>always</em> do.</h2>
-          <p>Turn on English subtitles and watch. Glossa quietly saves each line as it appears. If subtitles are off, it switches English on for you, and it can keep them hidden if you prefer a clean screen.</p>
+        <div class="phone mid rv" style="--d:.08s">
+          <div class="scr" style="background:radial-gradient(ellipse at 50% 30%, #3a2a12, #0d0d0e)"><img class="pdf" src="assets/pdf-page.jpg" alt="A real page from a Glossa vocabulary PDF">
+            <div class="shade"></div><div class="ttl"><b>Your <em>PDF</em>, ready at the credits</b><div class="tags"><span class="y">Picks first</span><span>Timestamps</span></div></div></div>
         </div>
-      </div>
-
-      <div class="scene flip">
-        <div class="still reveal">
-          <div class="img" data-parallax style="background-image:url('https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=1600&q=80&auto=format&fit=crop');filter:brightness(.6)"></div><div class="vig"></div>
-          <span class="sc">Scene 02 · Paused</span>
-          <div class="card-ui">
-            <div class="w">reluctant<i>adjective</i></div>
-            <div class="r"><b>English</b><span>If you are reluctant to do something, you do not want to do it.</span></div>
-            <div class="r"><b>Hindi</b><span class="hi">अनिच्छुक</span></div>
-            <div class="r"><b>Hinglish</b><span>anichchhuk</span></div>
-            <div class="acts"><span>🔊 Listen</span><span class="y">★ Save to PDF</span></div>
-          </div>
-          <div class="s-sub">I'm <mark>reluctant</mark> to trust him, he's too charming.</div>
-        </div>
-        <div class="s-text reveal" style="--d:.1s">
-          <span class="num">ii.</span>
-          <h2>Pause, and the subtitle becomes <em>yours.</em></h2>
-          <p>Click a word, or drag across a phrase like "piece of cake" or the whole line. The meaning appears right there, with Hindi, Hinglish and a button to hear it said. Press the star to keep it.</p>
-        </div>
-      </div>
-
-      <div class="scene">
-        <div class="still reveal">
-          <div class="img" data-parallax style="background-image:url('https://images.unsplash.com/photo-1451226428352-cf66bf8a0317?w=1600&q=80&auto=format&fit=crop');filter:brightness(.8) sepia(.15)"></div><div class="vig"></div>
-          <span class="sc">Scene 03 · Credits</span>
-          <img class="pdf-page" src="assets/pdf-page.jpg" alt="The first page of a real Glossa vocabulary PDF for a film called The Heist" loading="lazy">
-        </div>
-        <div class="s-text reveal" style="--d:.1s">
-          <span class="num">iii.</span>
-          <h2>The credits roll. Your <em>word list</em> is ready.</h2>
-          <p>A clean PDF downloads by itself: your picks first, then every hard word with a short meaning, Hinglish, similar words and the exact line it came from. This one is a real page Glossa made.</p>
+        <div class="phone rv" style="--d:.16s">
+          <div class="scr"><div class="pop">
+            <h4><svg viewBox="0 0 128 128"><rect width="128" height="128" rx="30" fill="#141311"/><rect x="26" y="45" width="76" height="10" rx="5" fill="#EDE8DC" opacity=".45"/><rect x="26" y="69" width="24" height="10" rx="5" fill="#EDE8DC"/><rect x="56" y="64" width="46" height="20" rx="6" fill="#F2C94C"/></svg>Glossa</h4>
+            <div class="sel">All hard words ▾</div>
+            <div class="tg"><span>Pause &amp; Pick</span><i></i></div>
+            <div class="tg"><span>Show subtitles</span><i class="off"></i></div>
+            <div class="mv"><b>The Heist</b><small>100% watched · PDF ready: 42 words</small><br><span class="btn">Create PDF now</span></div>
+            <div class="mv"><b>Paper Crowns S1E3</b><small>64% watched · 318 lines</small><br><span class="btn">Create PDF now</span></div>
+          </div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="tryit grain" id="try">
+  <section class="sec" style="padding-top:40px">
     <div class="wrap">
-      <div class="tryit-head">
-        <div>
-          <span class="kicker reveal">Try it</span>
-          <h2 class="reveal">This film is paused. <em>Pick a word.</em></h2>
+      <div class="fcards">
+        <div class="fc rv"><div class="top"><b>Pause &amp; Pick</b><i>↗</i></div><p>Click a word, or drag over a phrase or the whole line.</p><div class="viz"><div class="msub">It was a <mark>piece of cake</mark>.</div><svg class="mcur" viewBox="0 0 24 24"><path d="M4 2l15 11-7 1 4 8-3 1-4-8-5 5z" fill="#fff" stroke="#111" stroke-width="1.3"/></svg></div></div>
+        <div class="fc rv" style="--d:.06s"><div class="top"><b>Hindi + Hinglish</b><i>↗</i></div><p>Every meaning in simple English, Hindi script and Roman letters.</p><div class="viz"><div class="langs"><div><small class="cap">English</small><span>unwilling</span></div><div><small class="cap">Hindi</small><span class="hi">अनिच्छुक</span></div><div><small class="cap">Hinglish</small><span>anichchhuk</span></div></div></div></div>
+        <div class="fc rv" style="--d:.12s"><div class="top"><b>Hear it said</b><i>↗</i></div><p>Tap Listen on any card to hear the pronunciation.</p><div class="viz"><div class="wave" id="wave"></div></div></div>
+      </div>
+
+      <div class="head" style="margin-top:130px">
+        <div><span class="cap lab rv">Glossa PDF</span><h2 class="rv">A vocabulary list<br>for every film you finish</h2></div>
+        <div class="side rv"><p>When the credits roll, a PDF lands in your Downloads folder: your picks first, then every hard word with its meaning and the exact line it came from.</p><a class="pill" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><span>Get Glossa</span><span>Get Glossa</span></a></div>
+      </div>
+      <div class="dash rv">
+        <div class="bar"><i></i><i></i><i></i><span>Glossa · recent films</span></div>
+        <div class="body">
+          <h4>Your films</h4><div class="sub2">Example data · everything stays in your browser</div>
+          <div class="tiles"><div><span>Films</span><b>12</b></div><div><span>Hard words</span><b>486</b></div><div><span>Your picks</span><b>73</b></div><div class="hide-m"><span>Phrases</span><b>21</b></div><div class="hide-m"><span>PDFs ready</span><b>11</b></div><div class="hide-m"><span>Sign-ups</span><b>0</b></div></div>
+          <table>
+            <thead><tr><th>Film</th><th>Watched</th><th class="hide-m">Subtitle lines</th><th>Words</th><th class="hide-m">Picks</th><th>PDF</th></tr></thead>
+            <tbody>
+              <tr><td><span class="thumb ph" data-img="1706594366597-7c529d986768" data-w="100"></span>The Heist</td><td>100%</td><td class="hide-m">1,204</td><td>42</td><td class="hide-m">6</td><td class="ok">Ready</td></tr>
+              <tr><td><span class="thumb ph" data-img="1577979749830-f1d742b96791" data-w="100"></span>Blue Planet Nights</td><td>100%</td><td class="hide-m">988</td><td>51</td><td class="hide-m">9</td><td class="ok">Ready</td></tr>
+              <tr><td><span class="thumb ph" data-img="1632366989362-b7e202cb4fdf" data-w="100"></span>Paper Crowns S1E3</td><td>64%</td><td class="hide-m">318</td><td>19</td><td class="hide-m">2</td><td style="color:var(--t3)">At the credits</td></tr>
+              <tr><td><span class="thumb ph" data-img="1634651754953-1565eca58d5c" data-w="100"></span>Midnight Harbor</td><td>100%</td><td class="hide-m">1,512</td><td>38</td><td class="hide-m">5</td><td class="ok">Ready</td></tr>
+            </tbody>
+          </table>
         </div>
-        <p class="reveal">This is how Glossa looks on Netflix. Click any word in the subtitle below, or drag across a few words to pick a phrase.</p>
       </div>
-      <div class="player reveal" id="player">
-        <div class="img"></div>
-        <span class="paused">Paused · 1:14:09</span>
-        <div class="p-sub"><div class="box"><small>Glossa · click a word, or drag over a phrase</small><div class="line" id="line"></div></div></div>
-        <div class="p-card" id="pcard" role="dialog" aria-live="polite"></div>
-        <div class="bar"><b></b></div>
-      </div>
-      <div class="hint-row reveal"><span><b>Click</b> one word</span><span><b>Drag</b> across a phrase, like "give up"</span><span><b>Listen</b> to hear it said</span></div>
-    </div>
-  </section>
 
-  <section class="paper details">
-    <div class="wrap details-grid">
-      <h2 class="reveal">The small things, <em>done well.</em></h2>
-      <div class="dl-list">
-        <div class="dl-item reveal"><h3>Three ways to understand</h3><p>Simple English first, then Hindi in Devanagari, then Hinglish in Roman letters, so the meaning lands even if you don't read Hindi script.</p></div>
-        <div class="dl-item reveal"><h3>Idioms, not word salad</h3><p>Pick "give up" or "piece of cake" and you get what the phrase really means, not a word-by-word guess.</p></div>
-        <div class="dl-item reveal"><h3>Whole lines, translated</h3><p>Drag across a full line and Glossa translates it to Hindi, with its hard words explained underneath.</p></div>
-        <div class="dl-item reveal"><h3>Only the words worth learning</h3><p>Everyday words, names, sounds and filler are skipped. Choose all hard words, medium and hard, or only the hardest.</p></div>
-        <div class="dl-item reveal"><h3>Private by design</h3><p>No account and no server. Subtitles stay in your browser. Only the word you look up goes to free dictionary services.</p></div>
-        <div class="dl-item reveal"><h3>Free and open source</h3><p>Every line of code is on GitHub under the MIT license.</p></div>
+      <div class="open rv">
+        <span class="cap">Glossa · Open source</span>
+        <h2>Free, private and open<br>for everyone</h2>
+        <a class="pill dark" href="https://github.com/kunalsharmavlog-hue/glossa"><span>View on GitHub</span><span>View on GitHub</span></a>
       </div>
     </div>
   </section>
 
-  <section class="paper install" id="install">
+  <section class="sec" id="examples" style="padding-top:20px">
     <div class="wrap">
-      <div class="install-box reveal">
-        <div>
-          <h2>Ready before the <em>trailer</em> ends.</h2>
-          <p class="lead">Glossa isn't on the Chrome Web Store yet, so you add it yourself. It takes about a minute and works in Chrome, Edge, Brave, Arc and Opera.</p>
-          <a class="btn dark" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 20h14"/></svg>Download glossa.zip</a>
+      <div class="head">
+        <div><span class="cap lab rv">Examples</span><h2 class="rv">Learn from every<br>kind of film</h2></div>
+        <div class="side rv"><p>Whatever you watch tonight, Glossa turns it into words you understand and keep.</p><a class="pill" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><span>Start tonight</span><span>Start tonight</span></a></div>
+      </div>
+      <div class="stack">
+        <div class="ex rv"><div class="ph" data-img="1706594366597-7c529d986768" data-w="1000"></div><div class="t"><h3><em>Crime nights</em> build a courtroom vocabulary, one alibi at a time</h3><div class="words"><i>alibi</i><i>verdict</i><i>flimsy</i><i>testimony</i></div><a class="pill ghost" href="#faq"><span>How it works</span><span>How it works</span></a></div></div>
+        <div class="ex rv"><div class="ph" data-img="1632366989362-b7e202cb4fdf" data-w="1000"></div><div class="t"><h3><em>Sitcom evenings</em> teach the everyday English people really speak</h3><div class="words"><i>awkward</i><i>bicker</i><i>give up</i><i>hang out</i></div><a class="pill ghost" href="#faq"><span>How it works</span><span>How it works</span></a></div></div>
+        <div class="ex rv"><div class="ph" data-img="1577979749830-f1d742b96791" data-w="1000"></div><div class="t"><h3><em>Documentaries</em> fill your list with science and nature words</h3><div class="words"><i>habitat</i><i>dormant</i><i>erosion</i><i>prey</i></div><a class="pill ghost" href="#faq"><span>How it works</span><span>How it works</span></a></div></div>
+      </div>
+      <a class="readall rv" href="https://github.com/kunalsharmavlog-hue/glossa#readme"><span>Read the full guide on GitHub</span><span class="pill"><span>Read more</span><span>Read more</span></span></a>
+    </div>
+  </section>
+
+  <section class="sec" style="padding-top:40px">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:40px"><span class="cap lab rv">Updates</span><h2 class="rv" style="margin:0 0 18px;font:600 clamp(30px,3.4vw,48px)/1.05 var(--f);letter-spacing:-.035em">Latest updates<br>and releases</h2><a class="pill rv" href="https://github.com/kunalsharmavlog-hue/glossa/releases"><span>All releases</span><span>All releases</span></a></div>
+      <div class="ups">
+        <a class="up rv" href="https://github.com/kunalsharmavlog-hue/glossa/releases/tag/v1.2.0"><div class="ph" data-img="1489599849927-2ee91cede3ba" data-w="700"></div><div class="t"><span class="cap">Release 1.2</span><b>SubVocab is now Glossa, with a new logo and a calmer look</b></div></a>
+        <a class="up rv" style="--d:.06s" href="https://github.com/kunalsharmavlog-hue/glossa/releases/tag/v1.1.0"><div class="ph" data-img="1485095329183-d0797cdc5676" data-w="700"></div><div class="t"><span class="cap">Release 1.1</span><b>Pause &amp; Pick: click any word in a paused subtitle</b></div></a>
+        <a class="up rv" style="--d:.12s" href="https://github.com/kunalsharmavlog-hue/glossa"><div class="ph" data-img="1553729784-e91953dec042" data-w="700"></div><div class="t"><span class="cap">Open source</span><b>The full Glossa source is on GitHub under the MIT license</b></div></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec faq" id="faq" style="padding-top:40px">
+    <div class="wrap">
+      <span class="cap lab rv">FAQ</span>
+      <h2 class="rv">Frequently<br>asked questions</h2>
+      <div class="list rv">
+        <details><summary><i>+</i>What is Glossa?</summary><p>A free Chrome extension for Netflix. Pause, click any word in the subtitle, and see its meaning in English, Hindi and Hinglish. When the film ends, you get a vocabulary PDF.</p></details>
+        <details><summary><i>+</i>Does it need English subtitles?</summary><p>Yes. Words come only from English subtitles. If a film has them, Glossa switches them on for you, and you can keep them hidden on screen.</p></details>
+        <details><summary><i>+</i>How much does it cost?</summary><p>Nothing. Glossa is free and open source under the MIT license.</p></details>
+        <details><summary><i>+</i>What is sent over the internet?</summary><p>Only the word or line you look up, to Free Dictionary API, Wiktionary, MyMemory and Datamuse. Your subtitles and watching history stay in your browser.</p></details>
+        <details><summary><i>+</i>Does it work on phones or TVs?</summary><p>Not yet. It works on Netflix in a desktop browser: Chrome, Edge, Brave, Arc or Opera.</p></details>
+        <details><summary><i>+</i>How do I install it?</summary><p>Download glossa.zip and unzip it. Open chrome://extensions, turn on Developer mode, click Load unpacked and choose the glossa folder.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <h2 class="rv">Learn with Glossa</h2>
+      <a class="pill rv" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><span>Add to Chrome</span><span>Add to Chrome</span></a>
+      <div class="strip">
+        <div class="s rv" style="left:0;bottom:0;width:15%;height:62%"><div class="ph" data-img="1655057011043-158c48f3809d" data-w="500"></div></div>
+        <div class="s rv" style="left:17%;bottom:0;width:14%;height:36%;--d:.05s"><div class="ph" data-img="1540842246364-f7cf19d24e73" data-w="500"></div></div>
+        <div class="s rv" style="left:33%;bottom:0;width:20%;height:50%;--d:.1s"><div class="ph" data-img="1650476110251-be9128fb1e40" data-w="700"></div></div>
+        <div class="s rv" style="left:55%;bottom:0;width:18%;height:30%;--d:.15s"><div class="ph" data-img="1451226428352-cf66bf8a0317" data-w="600"></div></div>
+        <div class="s rv" style="right:0;bottom:0;width:25%;height:90%;--d:.2s;border-radius:50% 50% 14px 14px"><div class="ph" data-img="1517604931442-7e0c8ed2963c" data-w="700"></div></div>
+      </div>
+    </div>
+    <footer>
+      <div class="wrap">
+        <div class="fgrid" style="text-align:left">
+          <div><a class="logo" href="#top" style="display:flex;color:#fff;font-size:19px"><svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#ede8dc"/><rect x="26" y="45" width="76" height="10" rx="5" fill="#141311" opacity=".4"/><rect x="26" y="69" width="24" height="10" rx="5" fill="#141311"/><rect x="56" y="64" width="46" height="20" rx="6" fill="#F2C94C"/></svg>Glossa</a><p>Learn English from every movie. Made by Kunal Sharma.</p></div>
+          <div><h4 class="cap">Product</h4><a href="#product">Word lists</a><a href="#how">How it works</a><a href="#examples">Examples</a><a href="#faq">FAQ</a></div>
+          <div><h4 class="cap">Project</h4><a href="https://github.com/kunalsharmavlog-hue/glossa">GitHub</a><a href="https://github.com/kunalsharmavlog-hue/glossa/releases">Releases</a><a href="https://github.com/kunalsharmavlog-hue/glossa/issues">Report a problem</a><a href="https://github.com/kunalsharmavlog-hue/glossa/blob/main/LICENSE">MIT License</a></div>
+          <div><h4 class="cap">Powered by</h4><a href="https://en.wiktionary.org">Wiktionary</a><a href="https://dictionaryapi.dev">Free Dictionary API</a><a href="https://mymemory.translated.net">MyMemory</a><a href="https://www.datamuse.com/api/">Datamuse</a></div>
         </div>
-        <ol class="steps">
-          <li><div><b>Unzip the download</b><span>Keep the <code>glossa</code> folder somewhere safe.</span></div></li>
-          <li><div><b>Open your extensions</b><span>Type <code>chrome://extensions</code> in the address bar.</span></div></li>
-          <li><div><b>Turn on Developer mode</b><span>The switch is in the top-right corner.</span></div></li>
-          <li><div><b>Load unpacked</b><span>Choose the <code>glossa</code> folder, then pin the icon. Done.</span></div></li>
-        </ol>
+        <div class="legal"><span>Photos on <a href="https://unsplash.com">Unsplash</a> by Anastasiia Nelen, Krists Luhaers, Jake Hills, Romain Vignes, Felix Mooneeram, Denise Jans, Marcos Ramírez, Ricardo IV Tamayo, Moreno Matković, Oindrila Bose, Jan Böttinger, Joel Muniz and Chase Yi.</span><span>© 2026 Glossa · Not affiliated with or endorsed by Netflix. Netflix is a trademark of Netflix, Inc.</span></div>
       </div>
-    </div>
+    </footer>
   </section>
-
-  <section class="paper faq" id="faq">
-    <div class="wrap faq-grid">
-      <h2 class="reveal">Good <em>questions.</em></h2>
-      <div class="reveal">
-        <details><summary>Is it really free?</summary><p>Yes. Glossa is free and open source under the MIT license. There is no paid plan and no account.</p></details>
-        <details><summary>Does it need English subtitles?</summary><p>Yes. Words come only from English subtitles. If a film has them, Glossa switches them on for you, and you can keep them hidden on screen.</p></details>
-        <details><summary>Does it work on my phone or TV?</summary><p>Not yet. It works on Netflix in a desktop browser.</p></details>
-        <details><summary>What goes over the internet?</summary><p>Only the word or line you look up, to Free Dictionary API, Wiktionary, MyMemory and Datamuse. Your subtitles and watching history stay in your browser.</p></details>
-        <details><summary>Can I make the PDF before the film ends?</summary><p>Yes. Open the Glossa popup and press "Create PDF now" for any recent film. You can rename its headline there too.</p></details>
-      </div>
-    </div>
-  </section>
-
-  <section class="finale grain">
-    <div class="img" data-parallax></div><div class="shade"></div>
-    <div class="in">
-      <span class="kicker reveal">Tonight's feature</span>
-      <h2 class="reveal">The lights go down.<br>The <em>learning</em> begins.</h2>
-      <a class="btn reveal" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 20h14"/></svg>Add Glossa to Chrome</a>
-    </div>
-  </section>
-
-  <footer class="credits">
-    <div class="wrap">
-      <div class="reveal"><div class="role">Written and built by</div><div class="name">Kunal Sharma</div></div>
-      <div class="pair">
-        <div class="reveal"><div class="role">Meanings</div><div class="name">Wiktionary<br>Free Dictionary API</div></div>
-        <div class="reveal"><div class="role">Translations</div><div class="name">MyMemory</div></div>
-        <div class="reveal"><div class="role">Similar words</div><div class="name">Datamuse</div></div>
-        <div class="reveal"><div class="role">Source code</div><div class="name"><a href="https://github.com/kunalsharmavlog-hue/glossa">GitHub</a></div></div>
-      </div>
-      <div class="reveal"><div class="role">Photography</div><div class="name" style="font-size:clamp(17px,1.6vw,21px)"><a href="https://unsplash.com/@mnelen">Anastasiia Nelen</a> · <a href="https://unsplash.com/@kristsll">Krists Luhaers</a> · <a href="https://unsplash.com/@jakehills">Jake Hills</a> · <a href="https://unsplash.com/@rvignes">Romain Vignes</a> · <a href="https://unsplash.com/@felixmooneeram">Felix Mooneeram</a>, on <a href="https://unsplash.com">Unsplash</a></div></div>
-      <div class="end reveal">The End.</div>
-      <p class="legal">© 2026 Glossa. Glossa is an independent project and is not affiliated with or endorsed by Netflix. Netflix is a trademark of Netflix, Inc. <a href="https://github.com/kunalsharmavlog-hue/glossa/blob/main/LICENSE">MIT License</a> · <a href="https://github.com/kunalsharmavlog-hue/glossa/issues">Report a problem</a></p>
-    </div>
-  </footer>
 </main>
 
 <script>
@@ -417,110 +494,86 @@
   document.body.classList.remove("no-js");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
-
-  // Hero subtitles play like a film, and Glossa explains one word in each line.
-  const LINES = [
-    ["I'm ", "reluctant", " to trust him.", "adjective", "not wanting to do something", "अनिच्छुक · anichchhuk"],
-    ["Don't be so ", "naive", ". Look closer.", "adjective", "without much experience of life", "भोला · bhola"],
-    ["Breaking in? It was a ", "piece of cake", ".", "idiom", "something very easy to do", "बाएँ हाथ का खेल"],
-    ["That alibi is ", "flimsy", " at best.", "adjective", "weak and hard to believe", "कमज़ोर · kamzor"],
-  ];
-  const heroSub = $("#heroSub");
-  let li = 0;
-  function playLine() {
-    const [a, w, b, pos, def, hi] = LINES[li % LINES.length];
-    heroSub.style.opacity = 0;
-    setTimeout(() => {
-      heroSub.innerHTML = `${a}<span class="pick"><span class="inner">${w}</span><span class="gloss"><b>${w}<i>${pos}</i></b>${def}<span class="hi">${hi}</span></span></span>${b}`;
-      heroSub.style.opacity = 1;
-      setTimeout(() => heroSub.querySelector(".pick")?.classList.add("on"), 1100);
-    }, 450);
-    li++;
-  }
-  playLine();
-  if (!reduce) setInterval(playLine, 5200);
-
-  // Statement words: tap to show on touch screens.
-  $$(".word").forEach((w) => w.addEventListener("click", () => { $$(".word.show").forEach((o) => o !== w && o.classList.remove("show")); w.classList.toggle("show"); }));
-
-  // Try it: a paused player you can pick words in.
-  const DICT = {
-    "honestly": ["adverb", "used to show you are telling the truth", "सच में · sach mein"],
-    "evidence": ["noun", "facts that show something is true", "सबूत · sabut"],
-    "ambiguous": ["adjective", "having more than one possible meaning", "अस्पष्ट · aspasht"],
-    "reluctant": ["adjective", "not wanting to do something", "अनिच्छुक · anichchhuk"],
-    "give up": ["idiom", "to stop trying", "हार मानना · haar manna"],
-    "give up on": ["idiom", "to stop believing someone will succeed", "उम्मीद छोड़ देना · ummeed chhod dena"],
-    "give up on him": ["phrase", "to stop believing in him", "उससे उम्मीद छोड़ देना"],
-    "the evidence was ambiguous": ["phrase", "the proof could mean more than one thing", "सबूत अस्पष्ट थे · sabut aspasht the"],
-    "reluctant to give up": ["phrase", "not wanting to stop trying", "हार मानने को तैयार नहीं"],
-  };
-  const LINE = "Honestly, the evidence was ambiguous, but I was reluctant to give up on him.";
-  const lineEl = $("#line"), card = $("#pcard"), player = $("#player");
-  lineEl.innerHTML = LINE.split(/(\s+)/).map((t) => /\s/.test(t) ? t : `<span class="t">${t}</span>`).join("");
-  const toks = $$("#line .t");
-  const clean = (s) => s.toLowerCase().replace(/[^a-z' ]/g, "").trim();
-  let dragFrom = 0, dragTo = 0, dragging = false;
-
-  function select(a, b) {
-    const lo = Math.min(a, b), hi = Math.max(a, b);
-    toks.forEach((t, k) => t.classList.toggle("sel", k >= lo && k <= hi));
-    return toks.slice(lo, hi + 1);
-  }
-  function showCard(picked) {
-    const text = clean(picked.map((t) => t.textContent).join(" "));
-    const entry = DICT[text];
-    let body;
-    if (entry) body = `<div class="r"><b>English</b><span>${entry[1]}</span></div><div class="r"><b>Hindi</b><span class="hi">${entry[2]}</span></div>`;
-    else if (picked.length === 1) body = `<div class="note">An everyday word. Glossa skips words like this so your list stays useful. Try <b>ambiguous</b> or <b>reluctant</b>.</div>`;
-    else body = `<div class="note">On Netflix, Glossa translates any selection like this to Hindi. In this demo, try "give up" or "the evidence was ambiguous".</div>`;
-    card.innerHTML = `<button class="x" aria-label="Close">×</button><div class="w">${text}${entry ? `<i>${entry[0]}</i>` : ""}</div>${body}<div class="acts"><button data-say>🔊 Listen</button>${entry ? '<button class="y" data-save>★ Save to PDF</button>' : ""}</div>`;
-    const pr = player.getBoundingClientRect(), a = picked[0].getBoundingClientRect(), z = picked[picked.length - 1].getBoundingClientRect();
-    const mid = (a.left + z.right) / 2 - pr.left;
-    card.classList.add("on");
-    const w = card.offsetWidth, h = card.offsetHeight;
-    card.style.left = Math.min(Math.max(12, mid - w / 2), pr.width - w - 12) + "px";
-    card.style.top = Math.max(12, lineEl.parentElement.getBoundingClientRect().top - pr.top - h - 12) + "px";
-    card.querySelector(".x").onclick = () => { card.classList.remove("on"); toks.forEach((t) => t.classList.remove("sel")); };
-    card.querySelector("[data-say]").onclick = () => { if (!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = .9; speechSynthesis.speak(u); };
-    const sv = card.querySelector("[data-save]");
-    if (sv) sv.onclick = () => { sv.textContent = "✓ Saved"; };
-  }
-  toks.forEach((t, k) => {
-    t.addEventListener("pointerdown", (e) => { e.preventDefault(); dragging = true; dragFrom = dragTo = k; select(k, k); });
-    t.addEventListener("pointerenter", () => { if (dragging) { dragTo = k; select(dragFrom, dragTo); } });
-  });
-  lineEl.addEventListener("pointermove", (e) => {
-    if (!dragging || e.pointerType === "mouse") return;
-    const k = toks.indexOf(document.elementFromPoint(e.clientX, e.clientY));
-    if (k >= 0 && k !== dragTo) { dragTo = k; select(dragFrom, dragTo); }
-  });
-  addEventListener("pointerup", () => { if (!dragging) return; dragging = false; showCard(select(dragFrom, dragTo)); });
-
-  // Start with one word already picked, so visitors see the idea at once.
-  const startDemo = () => { const k = toks.findIndex((t) => clean(t.textContent) === "ambiguous"); select(k, k); showCard([toks[k]]); };
-  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { setTimeout(startDemo, 600); o.disconnect(); } }, { threshold: .5 }).observe(player);
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+  const U = (id, w) => `https://images.unsplash.com/photo-${id}?w=${w}&q=75&auto=format&fit=crop`;
+  $$("[data-img]").forEach((el) => (el.style.backgroundImage = `url("${U(el.dataset.img, el.dataset.w || 800)}")`));
 
   // Reveal on scroll.
-  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
-  $$(".reveal").forEach((n) => io.observe(n));
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.12 });
+  $$(".rv").forEach((n) => io.observe(n));
 
-  // Gentle parallax on the film stills.
-  const par = $$("[data-parallax]");
-  let ticking = false;
+  // Row of word lists.
+  const row = $("#rowcards");
+  $$(".navbtns button").forEach((b) => b.addEventListener("click", () => row.scrollBy({ left: Number(b.dataset.d) * 340, behavior: "smooth" })));
+
+  // Sound wave.
+  $("#wave").innerHTML = Array.from({ length: 40 }, (_, i) => `<i style="--i:${i}"></i>`).join("");
+
+  // Genre wheel: each genre has its own photo and a word you might learn.
+  const G = [
+    ["Crime", "alibi", "proof that you were somewhere else", "1706594366597-7c529d986768"],
+    ["Comedy", "awkward", "making people feel uneasy", "1632366989362-b7e202cb4fdf"],
+    ["Drama", "resentment", "a bitter feeling of being treated unfairly", "1655057011043-158c48f3809d"],
+    ["Thriller", "ominous", "giving the feeling something bad will happen", "1634651754953-1565eca58d5c"],
+    ["Documentary", "habitat", "the natural home of an animal or plant", "1577979749830-f1d742b96791"],
+    ["Romance", "yearn", "to want something very much", "1485095329183-d0797cdc5676"],
+    ["Anime", "resolve", "a strong decision to do something", "1650476110251-be9128fb1e40"],
+    ["Horror", "eerie", "strange in a frightening way", "1489599849927-2ee91cede3ba"],
+  ];
+  const gbox = $("#gbox"), wheel = $("#wheel"), gword = $("#gword");
+  G.forEach(([, , , id], i) => { const d = document.createElement("div"); d.className = "ph" + (i ? "" : " on"); d.style.backgroundImage = `url("${U(id, 1800)}")`; gbox.prepend(d); });
+  const photos = [...gbox.querySelectorAll(":scope > .ph")].reverse();
+  wheel.innerHTML = G.map(([g]) => `<li>${g}</li>`).join("");
+  const items = [...wheel.children];
+  let gi = -1;
+  const setG = (i) => { if (i === gi) return; gi = i; items.forEach((li, k) => li.classList.toggle("on", k === i)); photos.forEach((p, k) => p.classList.toggle("on", k === i)); gword.querySelector("b").textContent = G[i][1]; gword.querySelector("span").textContent = G[i][2]; };
+
+  // Hero scroll sequence.
+  const hero = $("#hero"), chips = $$("[data-c]"), mos = $$("[data-m]"), main = $("#main");
+  const la = $("#la"), lb1 = $("#lb1"), lb2 = $("#lb2"), note = $("#note"), cta = $("#cta"), works = $("#works"), copy = $("#copy");
+  const baseT = chips.map((c) => c.style.transform || "");
+  let mx = 0, my = 0;
+  addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; });
+  const nav = $("#nav"), genres = $("#genres");
+
   function frame() {
-    ticking = false;
-    for (const el of par) {
-      const r = el.parentElement.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) continue;
-      const k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
-      el.style.transform = `translateY(${(-k * 6).toFixed(2)}%)`;
-    }
-  }
-  if (!reduce) addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }, { passive: true });
-  frame();
+    nav.classList.toggle("solid", scrollY > 40);
+    const r = hero.getBoundingClientRect();
+    const p = reduce ? 0 : clamp(-r.top / (r.height - innerHeight));
+    // Collage drifts with the mouse, then flies outward.
+    const out = ease(clamp(p / 0.28));
+    chips.forEach((c, i) => {
+      const dx = +getComputedStyle(c).getPropertyValue("--dx") || 0, dy = +getComputedStyle(c).getPropertyValue("--dy") || 0;
+      const k = 12 + (i % 3) * 8;
+      c.style.transform = `translate(${dx * out * 6 + mx * k}px, ${dy * out * 6 + my * k}px) ${baseT[i]}`;
+      c.style.opacity = 1 - out;
+    });
+    note.style.opacity = cta.style.opacity = works.style.opacity = 1 - clamp(p / 0.15);
+    la.style.color = p > 0.06 ? "#5c5c62" : "#fff";
+    la.style.opacity = 1 - clamp((p - 0.2) / 0.15);
+    // The second line opens around a film still that grows.
+    const open = ease(clamp((p - 0.2) / 0.3));
+    const gap = open * (innerWidth < 700 ? innerWidth * 0.06 : Math.min(innerWidth * 0.3, 470));
+    lb1.style.transform = `translateX(${-gap}px)`;
+    lb2.style.transform = `translateX(${gap}px)`;
+    lb1.style.opacity = lb2.style.opacity = innerWidth < 700 ? 1 - open : 1;
+    const grow = ease(clamp((p - 0.22) / 0.33));
+    const full = ease(clamp((p - 0.62) / 0.3));
+    main.style.transform = `scale(${Math.max(0, grow * 0.5 + full * 0.5)})`;
+    copy.style.opacity = 1 - clamp((p - 0.55) / 0.12);
+    mos.forEach((m, i) => { const t = ease(clamp((p - 0.66 - i * 0.02) / 0.22)); m.style.opacity = t; m.style.transform = `scale(${0.85 + t * 0.15})`; });
 
-  requestAnimationFrame(() => setTimeout(() => document.body.classList.add("ready"), 80));
+    // Genre wheel.
+    const g = genres.getBoundingClientRect();
+    const gp = clamp(-g.top / (g.height - innerHeight));
+    const idx = Math.min(G.length - 1, Math.floor(gp * G.length));
+    const h = items[0].offsetHeight;
+    wheel.style.transform = `translateY(${-(gp * (G.length - 1)) * h - h / 2}px)`;
+    setG(idx);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
 </script>
 </body>
