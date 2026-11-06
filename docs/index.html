@@ -14,12 +14,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #000; --card: #0f0f10; --card2: #18181a; --line: rgba(255,255,255,.09); --t2: #a1a1a6; --t3: #5c5c62;
+    --bg: #000; --card: #0f0f10; --card2: #18181a; --line: rgba(255,255,255,.09); --t2: #a1a1a6; --t3: #8e8e93;
     --gold: #f2c94c; --gold2: #ffdc73; --ink: #141311; --cream: #ede8dc; --green: #34d399;
-    --f: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --f: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --gut: clamp(16px, 2.6vw, 36px);
   }
   * { box-sizing: border-box; }
@@ -33,7 +33,7 @@
   .cap { font: 600 10.5px/1 var(--f); letter-spacing: .12em; text-transform: uppercase; }
   .ph { background-size: cover; background-position: center; background-color: #1a1a1a; }
 
-  .pill { display: inline-flex; align-items: center; justify-content: center; height: 34px; padding: 0 16px; border-radius: 999px; background: var(--gold); color: #000; font: 700 10.5px/1 var(--f); letter-spacing: .12em; text-transform: uppercase; overflow: hidden; position: relative; transition: background .25s; white-space: nowrap; }
+  .pill { display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 20px; border-radius: 999px; background: var(--gold); color: #000; font: 700 11px/1 var(--f); letter-spacing: .12em; text-transform: uppercase; overflow: hidden; position: relative; transition: background .25s; white-space: nowrap; }
   .pill:hover { background: var(--gold2); }
   .pill span { display: block; transition: transform .35s cubic-bezier(.7,0,.2,1); }
   .pill span + span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: translateY(100%); }
@@ -42,6 +42,12 @@
   .pill.dark { background: #fff; }
   .pill.ghost { background: rgba(255,255,255,.1); color: #fff; }
 
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 8px; }
+  .navbtns button:focus-visible, .pill:focus-visible { border-radius: 999px; }
+  .skip { position: absolute; left: 16px; top: -60px; z-index: 100; background: var(--gold); color: #000; padding: 10px 16px; border-radius: 999px; font-weight: 600; }
+  .skip:focus { top: 12px; }
+  a, button, summary { cursor: pointer; }
+  .stage::before { content: ""; position: absolute; left: 50%; top: 52%; width: 900px; height: 600px; translate: -50% -50%; background: radial-gradient(closest-side, rgba(242,201,76,.12), transparent); z-index: 1; pointer-events: none; }
   /* Nav */
   .nav { position: fixed; inset: 0 0 auto; z-index: 80; transition: background .3s; }
   .nav.solid { background: rgba(0,0,0,.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
@@ -102,6 +108,15 @@
   .rowcards { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 6px; }
   .rowcards::-webkit-scrollbar { display: none; }
   .lc { flex: 0 0 clamp(270px, 24vw, 330px); scroll-snap-align: start; border-radius: 16px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); padding: 14px; }
+  .lc { position: relative; overflow: hidden; transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+  .lc:hover { transform: translateY(-4px); }
+  .lc::before { content: ""; position: absolute; inset: 0 0 auto; height: 120px; background: var(--blk); opacity: .55; pointer-events: none; }
+  .lc > * { position: relative; }
+  .lc:nth-child(1) { --blk: linear-gradient(180deg, #8a5a12, transparent); }
+  .lc:nth-child(2) { --blk: linear-gradient(180deg, #8a1f3a, transparent); }
+  .lc:nth-child(3) { --blk: linear-gradient(180deg, #11615a, transparent); }
+  .lc:nth-child(4) { --blk: linear-gradient(180deg, #4b2a8a, transparent); }
+  .lc:nth-child(5) { --blk: linear-gradient(180deg, #1f4f8a, transparent); }
   .lc .top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .lc .av { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex: none; }
   .lc .av .ph { width: 100%; height: 100%; }
@@ -114,7 +129,7 @@
   .lc .words { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
   .lc .words i { font-style: normal; font-size: 12px; padding: 4px 9px; border-radius: 999px; background: rgba(242,201,76,.12); color: var(--gold); }
   .navbtns { display: flex; gap: 6px; }
-  .navbtns button { all: unset; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: #000; display: grid; place-items: center; }
+  .navbtns button { all: unset; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: #000; display: grid; place-items: center; }
 
   /* Genre wheel over a photo */
   .genres { height: 280vh; position: relative; }
@@ -277,6 +292,7 @@
 </style>
 </head>
 <body class="no-js">
+<a class="skip" href="#product">Skip to content</a>
 
 <header class="nav" id="nav">
   <div class="wrap">
@@ -290,27 +306,27 @@
   <section class="hero" id="hero">
     <div class="stage" id="stage">
       <!-- Collage around the headline -->
-      <div class="chip tile" data-c style="left:3%;top:16%;width:150px;height:190px;--dx:-60;--dy:-40;transform:rotate(-4deg)"><div class="ph" data-img="1655057011043-158c48f3809d" data-w="400"></div></div>
-      <div class="chip arrow hide-m" data-c style="left:14%;top:44%;--dx:-40;--dy:0">↗</div>
-      <div class="chip orb hide-m" data-c style="left:6%;top:56%;width:120px;height:120px;--dx:-60;--dy:30"><div class="ph" data-img="1574267432553-4b4628081c31" data-w="300"></div></div>
-      <div class="chip gl hide-m" data-c style="left:5%;bottom:20%;--dx:-50;--dy:40"><b>reluctant</b>not wanting to do something<br><span class="hi">अनिच्छुक</span></div>
-      <div class="chip orb" data-c style="left:42%;top:-6%;width:300px;height:300px;--dx:0;--dy:-60"><div class="ph" data-img="1485095329183-d0797cdc5676" data-w="600" style="filter:brightness(.55)"></div></div>
-      <div class="chip gl sm hide-m" data-c style="left:58%;top:24%;--dx:20;--dy:-40"><b>naive</b><span class="hi">भोला</span> · bhola</div>
-      <div class="chip tile" data-c style="right:4%;top:12%;width:170px;height:120px;--dx:60;--dy:-40;transform:rotate(3deg)"><div class="ph" data-img="1489599849927-2ee91cede3ba" data-w="400"></div></div>
-      <div class="chip orb hide-m" data-c style="right:9%;top:40%;width:84px;height:84px;--dx:50;--dy:0"><div class="ph" data-img="1540842246364-f7cf19d24e73" data-w="200"></div></div>
-      <div class="chip tile hide-m" data-c style="right:3%;bottom:24%;width:190px;height:140px;--dx:60;--dy:40;transform:rotate(-2deg)"><div class="ph" data-img="1517604931442-7e0c8ed2963c" data-w="400"></div></div>
-      <div class="chip gl hide-m" data-c style="right:16%;bottom:13%;--dx:40;--dy:50"><b>piece of cake</b>something very easy<br><span class="hi">बाएँ हाथ का खेल</span></div>
-      <div class="chip arrow hide-m" data-c style="left:28%;bottom:16%;--dx:-30;--dy:50">↙</div>
+      <div aria-hidden="true" class="chip tile" data-c style="left:3%;top:16%;width:150px;height:190px;--dx:-60;--dy:-40;transform:rotate(-4deg)"><div class="ph" data-img="1655057011043-158c48f3809d" data-w="400"></div></div>
+      <div aria-hidden="true" class="chip arrow hide-m" data-c style="left:14%;top:44%;--dx:-40;--dy:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></div>
+      <div aria-hidden="true" class="chip orb hide-m" data-c style="left:6%;top:56%;width:120px;height:120px;--dx:-60;--dy:30"><div class="ph" data-img="1574267432553-4b4628081c31" data-w="300"></div></div>
+      <div aria-hidden="true" class="chip gl hide-m" data-c style="left:5%;bottom:20%;--dx:-50;--dy:40"><b>reluctant</b>not wanting to do something<br><span class="hi">अनिच्छुक</span></div>
+      <div aria-hidden="true" class="chip orb" data-c style="left:42%;top:-6%;width:300px;height:300px;--dx:0;--dy:-60"><div class="ph" data-img="1485095329183-d0797cdc5676" data-w="600" style="filter:brightness(.55)"></div></div>
+      <div aria-hidden="true" class="chip gl sm hide-m" data-c style="left:58%;top:24%;--dx:20;--dy:-40"><b>naive</b><span class="hi">भोला</span> · bhola</div>
+      <div aria-hidden="true" class="chip tile" data-c style="right:4%;top:12%;width:170px;height:120px;--dx:60;--dy:-40;transform:rotate(3deg)"><div class="ph" data-img="1489599849927-2ee91cede3ba" data-w="400"></div></div>
+      <div aria-hidden="true" class="chip orb hide-m" data-c style="right:9%;top:40%;width:84px;height:84px;--dx:50;--dy:0"><div class="ph" data-img="1540842246364-f7cf19d24e73" data-w="200"></div></div>
+      <div aria-hidden="true" class="chip tile hide-m" data-c style="right:3%;bottom:24%;width:190px;height:140px;--dx:60;--dy:40;transform:rotate(-2deg)"><div class="ph" data-img="1517604931442-7e0c8ed2963c" data-w="400"></div></div>
+      <div aria-hidden="true" class="chip gl hide-m" data-c style="right:16%;bottom:13%;--dx:40;--dy:50"><b>piece of cake</b>something very easy<br><span class="hi">बाएँ हाथ का खेल</span></div>
+      <div aria-hidden="true" class="chip arrow hide-m" data-c style="left:28%;bottom:16%;--dx:-30;--dy:50"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 7 7 17M16 17H7V8"/></svg></div>
 
       <!-- Mosaic that frames the film still at the end -->
-      <div class="mos" data-m style="left:2%;top:10%;width:22%;height:38%"><div class="ph" data-img="1632366989362-b7e202cb4fdf" data-w="600"></div></div>
-      <div class="mos" data-m style="left:2%;top:52%;width:22%;height:38%"><div class="ph" data-img="1706594366597-7c529d986768" data-w="600"></div></div>
-      <div class="mos" data-m style="right:2%;top:10%;width:22%;height:24%"><div class="ph" data-img="1574267432553-4b4628081c31" data-w="600"></div></div>
-      <div class="mos" data-m style="right:2%;top:38%;width:22%;height:24%"><div class="ph" data-img="1634651754953-1565eca58d5c" data-w="600"></div></div>
-      <div class="mos" data-m style="right:2%;top:66%;width:22%;height:24%"><div class="ph" data-img="1577979749830-f1d742b96791" data-w="600"></div></div>
-      <div class="mos" data-m style="left:26%;top:78%;width:48%;height:12%"><div class="ph" data-img="1451226428352-cf66bf8a0317" data-w="900"></div></div>
+      <div aria-hidden="true" class="mos" data-m style="left:2%;top:10%;width:22%;height:38%"><div class="ph" data-img="1632366989362-b7e202cb4fdf" data-w="600"></div></div>
+      <div aria-hidden="true" class="mos" data-m style="left:2%;top:52%;width:22%;height:38%"><div class="ph" data-img="1706594366597-7c529d986768" data-w="600"></div></div>
+      <div aria-hidden="true" class="mos" data-m style="right:2%;top:10%;width:22%;height:24%"><div class="ph" data-img="1574267432553-4b4628081c31" data-w="600"></div></div>
+      <div aria-hidden="true" class="mos" data-m style="right:2%;top:38%;width:22%;height:24%"><div class="ph" data-img="1634651754953-1565eca58d5c" data-w="600"></div></div>
+      <div aria-hidden="true" class="mos" data-m style="right:2%;top:66%;width:22%;height:24%"><div class="ph" data-img="1577979749830-f1d742b96791" data-w="600"></div></div>
+      <div aria-hidden="true" class="mos" data-m style="left:26%;top:78%;width:48%;height:12%"><div class="ph" data-img="1451226428352-cf66bf8a0317" data-w="900"></div></div>
 
-      <div class="main" id="main">
+      <div class="main" id="main" role="img" aria-label="A paused film with the word ambiguous picked and explained by Glossa">
         <div class="ph" data-img="1650476110251-be9128fb1e40" data-w="1600"></div>
         <div class="gl"><b>ambiguous</b>having more than one possible meaning<br><span class="hi">अस्पष्ट · aspasht</span></div>
         <div class="sub">The evidence is <mark>ambiguous</mark>.</div>
@@ -331,7 +347,7 @@
     <div class="wrap">
       <div class="head">
         <div><span class="cap lab rv">Word lists</span><h2 class="rv">Every film leaves you<br>with a list worth keeping</h2></div>
-        <div class="side rv"><p>Glossa collects the hard words from each film as you watch, with meanings and the line they came from. These are example lists from different kinds of films.</p><div style="display:flex;gap:10px;align-items:center;width:100%;justify-content:space-between"><a class="pill" href="#examples"><span>See examples</span><span>See examples</span></a><div class="navbtns"><button data-d="-1" aria-label="Previous">‹</button><button data-d="1" aria-label="Next">›</button></div></div></div>
+        <div class="side rv"><p>Glossa collects the hard words from each film as you watch, with meanings and the line they came from. These are example lists from different kinds of films.</p><div style="display:flex;gap:10px;align-items:center;width:100%;justify-content:space-between"><a class="pill" href="#examples"><span>See examples</span><span>See examples</span></a><div class="navbtns"><button data-d="-1" aria-label="Previous word list"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button data-d="1" aria-label="Next word list"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div></div></div>
       </div>
       <div class="rowcards rv" id="rowcards">
         <div class="lc"><div class="top"><div class="av"><div class="ph" data-img="1706594366597-7c529d986768" data-w="100"></div></div><b>Crime drama</b><small class="cap">Example</small></div><div class="stats"><div class="st"><b>42</b><span class="cap">Hard words</span></div><div class="st"><b>6</b><span class="cap">Your picks</span></div></div><div class="words"><i>alibi</i><i>flimsy</i><i>verdict</i></div></div>
@@ -388,9 +404,9 @@
   <section class="sec" style="padding-top:40px">
     <div class="wrap">
       <div class="fcards">
-        <div class="fc rv"><div class="top"><b>Pause &amp; Pick</b><i>↗</i></div><p>Click a word, or drag over a phrase or the whole line.</p><div class="viz"><div class="msub">It was a <mark>piece of cake</mark>.</div><svg class="mcur" viewBox="0 0 24 24"><path d="M4 2l15 11-7 1 4 8-3 1-4-8-5 5z" fill="#fff" stroke="#111" stroke-width="1.3"/></svg></div></div>
-        <div class="fc rv" style="--d:.06s"><div class="top"><b>Hindi + Hinglish</b><i>↗</i></div><p>Every meaning in simple English, Hindi script and Roman letters.</p><div class="viz"><div class="langs"><div><small class="cap">English</small><span>unwilling</span></div><div><small class="cap">Hindi</small><span class="hi">अनिच्छुक</span></div><div><small class="cap">Hinglish</small><span>anichchhuk</span></div></div></div></div>
-        <div class="fc rv" style="--d:.12s"><div class="top"><b>Hear it said</b><i>↗</i></div><p>Tap Listen on any card to hear the pronunciation.</p><div class="viz"><div class="wave" id="wave"></div></div></div>
+        <div class="fc rv"><div class="top"><b>Pause &amp; Pick</b><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></i></div><p>Click a word, or drag over a phrase or the whole line.</p><div class="viz"><div class="msub">It was a <mark>piece of cake</mark>.</div><svg class="mcur" viewBox="0 0 24 24"><path d="M4 2l15 11-7 1 4 8-3 1-4-8-5 5z" fill="#fff" stroke="#111" stroke-width="1.3"/></svg></div></div>
+        <div class="fc rv" style="--d:.06s"><div class="top"><b>Hindi + Hinglish</b><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></i></div><p>Every meaning in simple English, Hindi script and Roman letters.</p><div class="viz"><div class="langs"><div><small class="cap">English</small><span>unwilling</span></div><div><small class="cap">Hindi</small><span class="hi">अनिच्छुक</span></div><div><small class="cap">Hinglish</small><span>anichchhuk</span></div></div></div></div>
+        <div class="fc rv" style="--d:.12s"><div class="top"><b>Hear it said</b><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></i></div><p>Tap Listen on any card to hear the pronunciation.</p><div class="viz"><div class="wave" id="wave"></div></div></div>
       </div>
 
       <div class="head" style="margin-top:130px">
@@ -453,12 +469,12 @@
       <span class="cap lab rv">FAQ</span>
       <h2 class="rv">Frequently<br>asked questions</h2>
       <div class="list rv">
-        <details><summary><i>+</i>What is Glossa?</summary><p>A free Chrome extension for Netflix. Pause, click any word in the subtitle, and see its meaning in English, Hindi and Hinglish. When the film ends, you get a vocabulary PDF.</p></details>
-        <details><summary><i>+</i>Does it need English subtitles?</summary><p>Yes. Words come only from English subtitles. If a film has them, Glossa switches them on for you, and you can keep them hidden on screen.</p></details>
-        <details><summary><i>+</i>How much does it cost?</summary><p>Nothing. Glossa is free and open source under the MIT license.</p></details>
-        <details><summary><i>+</i>What is sent over the internet?</summary><p>Only the word or line you look up, to Free Dictionary API, Wiktionary, MyMemory and Datamuse. Your subtitles and watching history stay in your browser.</p></details>
-        <details><summary><i>+</i>Does it work on phones or TVs?</summary><p>Not yet. It works on Netflix in a desktop browser: Chrome, Edge, Brave, Arc or Opera.</p></details>
-        <details><summary><i>+</i>How do I install it?</summary><p>Download glossa.zip and unzip it. Open chrome://extensions, turn on Developer mode, click Load unpacked and choose the glossa folder.</p></details>
+        <details><summary><i aria-hidden="true">+</i>What is Glossa?</summary><p>A free Chrome extension for Netflix. Pause, click any word in the subtitle, and see its meaning in English, Hindi and Hinglish. When the film ends, you get a vocabulary PDF.</p></details>
+        <details><summary><i aria-hidden="true">+</i>Does it need English subtitles?</summary><p>Yes. Words come only from English subtitles. If a film has them, Glossa switches them on for you, and you can keep them hidden on screen.</p></details>
+        <details><summary><i aria-hidden="true">+</i>How much does it cost?</summary><p>Nothing. Glossa is free and open source under the MIT license.</p></details>
+        <details><summary><i aria-hidden="true">+</i>What is sent over the internet?</summary><p>Only the word or line you look up, to Free Dictionary API, Wiktionary, MyMemory and Datamuse. Your subtitles and watching history stay in your browser.</p></details>
+        <details><summary><i aria-hidden="true">+</i>Does it work on phones or TVs?</summary><p>Not yet. It works on Netflix in a desktop browser: Chrome, Edge, Brave, Arc or Opera.</p></details>
+        <details><summary><i aria-hidden="true">+</i>How do I install it?</summary><p>Download glossa.zip and unzip it. Open chrome://extensions, turn on Developer mode, click Load unpacked and choose the glossa folder.</p></details>
       </div>
     </div>
   </section>
@@ -501,6 +517,8 @@
 
   // Reveal on scroll.
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.12 });
+  $$(".rowcards, .fcards, .ups, .stack, .list, .phones").forEach((g) => [...g.children].forEach((c, i) => { if (!c.style.getPropertyValue("--d")) c.style.setProperty("--d", (i * 0.06).toFixed(2) + "s"); }));
+  $$(".rowcards > .lc").forEach((c) => c.classList.add("rv"));
   $$(".rv").forEach((n) => io.observe(n));
 
   // Row of word lists.
@@ -550,7 +568,7 @@
       c.style.opacity = 1 - out;
     });
     note.style.opacity = cta.style.opacity = works.style.opacity = 1 - clamp(p / 0.15);
-    la.style.color = p > 0.06 ? "#5c5c62" : "#fff";
+    la.style.color = p > 0.06 ? "#6b6b70" : "#fff";
     la.style.opacity = 1 - clamp((p - 0.2) / 0.15);
     // The second line opens around a film still that grows.
     const open = ease(clamp((p - 0.2) / 0.3));
