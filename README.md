@@ -32,7 +32,16 @@ Then play anything on Netflix with English subtitles available. The icon shows a
 | `pdf.js` | A small PDF writer with no dependencies |
 | `hinglish.js` | Turns Hindi script into Hinglish |
 | `icons/` | Extension icons |
-| `docs/` | The website, served by GitHub Pages |
+| `docs/` | The website |
+| `tests/` | End-to-end test |
+
+## Testing
+
+`tests/run.sh` loads the real extension in headless Chrome on a mock Netflix page and checks 16 things end to end: subtitle capture, Pause & Pick, saving a word, phrase and line lookups, the translation backup when the free limit runs out, the PDF and its file name, and the popup. It needs Google Chrome, Node 22+, openssl and ffmpeg.
+
+```sh
+sh tests/run.sh
+```
 
 ## Disclaimer
 

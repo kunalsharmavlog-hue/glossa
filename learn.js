@@ -80,7 +80,7 @@
   }
 
   function readCue() {
-    const boxes = document.querySelectorAll(".player-timedtext-text-container");
+    const boxes = document.querySelectorAll(".player-timedtext-text-container, .player-timedtext [class*=\"text-container\"]");
     return [...boxes].map((b) => b.innerText || b.textContent).join("\n")
       .split("\n").map((l) => l.replace(/\s+/g, " ").trim()).filter(Boolean).join("\n");
   }

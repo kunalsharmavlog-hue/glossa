@@ -1,0 +1,4 @@
+# The website lives in docs/. Netlify publishes it as is; there is no build step.
+[build]
+  publish = "docs"
+  command = ""

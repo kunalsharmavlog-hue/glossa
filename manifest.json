@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Glossa",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Learn English from what you watch: pause, pick any subtitle word for its meaning in English, Hindi and Hinglish, and get a vocabulary PDF when the movie ends.",
   "icons": {
     "16": "icons/icon16.png",
@@ -21,7 +21,8 @@
     "https://en.wiktionary.org/*",
     "https://simple.wiktionary.org/*",
     "https://api.mymemory.translated.net/*",
-    "https://api.datamuse.com/*"
+    "https://api.datamuse.com/*",
+    "https://translate.googleapis.com/*"
   ],
   "background": {
     "service_worker": "background.js"

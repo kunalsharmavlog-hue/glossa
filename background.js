@@ -105,16 +105,43 @@ function looksLikeSpelling(hindiRoman, word) {
 
 // Returns undefined if the service could not be reached, and null if it has no usable meaning.
 // maxWords is 4 for one word; phrases and whole lines picked on screen allow longer answers.
-async function hindiFor(word, maxWords = 4) {
-  const data = await fetchJson(`https://api.mymemory.translated.net/get?langpair=en|hi&q=${encodeURIComponent(word)}`);
+// MyMemory answers first. When it is down or its free daily limit is used up, Google's public
+// translate endpoint answers instead. Returns a list of candidate translations, or undefined if unreachable.
+async function fromMyMemory(text) {
+  const data = await fetchJson(`https://api.mymemory.translated.net/get?langpair=en|hi&q=${encodeURIComponent(text)}`);
   if (!data || !data.responseData) return undefined;
+  const top = String(data.responseData.translatedText || "");
+  // Over the daily limit MyMemory still answers, but with a warning instead of a translation.
+  const status = Number(data.responseStatus);
+  if ((status && status !== 200) || /MYMEMORY WARNING|USED ALL AVAILABLE|QUOTA|INVALID/i.test(top)) return undefined;
+  return [top, ...(data.matches || []).map((m) => m.translation)];
+}
+
+async function fromGoogle(text) {
+  const data = await fetchJson(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=hi&dt=t&q=${encodeURIComponent(text)}`);
+  if (!Array.isArray(data) || !Array.isArray(data[0])) return undefined;
+  const joined = data[0].map((part) => (Array.isArray(part) ? part[0] : "")).join("").trim();
+  return joined ? [joined] : undefined;
+}
+
+// Returns undefined if no service could be reached (try again later), null if none had a usable meaning.
+async function hindiFor(word, maxWords = 4) {
   // The top result is sometimes a whole unrelated sentence, so only short, Hindi-only answers count.
   const allowed = maxWords > 4 ? /^[ऀ-ॿ\s\-,?!'"।.]+$/ : /^[ऀ-ॿ\s-]+$/;
-  const answers = [data.responseData.translatedText, ...(data.matches || []).map((m) => m.translation)]
+  const pick = (list) => (list || [])
     .map((t) => String(t || "").replace(/[।.!?,]+$/, "").trim())
     .filter((t) => t && /[ऀ-ॿ]/.test(t) && allowed.test(t) && t.split(/\s+/).length <= maxWords)
-    .filter((t) => maxWords > 4 || !looksLikeSpelling(Hinglish.romanize(t), word));
-  return answers.length ? { hindi: answers[0], hinglish: Hinglish.romanize(answers[0]) } : null;
+    .find((t) => maxWords > 4 || !looksLikeSpelling(Hinglish.romanize(t), word));
+  const mine = await fromMyMemory(word);
+  let best = pick(mine);
+  let reached = mine !== undefined;
+  if (!best) {
+    const google = await fromGoogle(word);
+    reached = reached || google !== undefined;
+    best = pick(google);
+  }
+  if (best) return { hindi: best, hinglish: Hinglish.romanize(best) };
+  return reached ? null : undefined;
 }
 
 async function similarWords(word) {
@@ -337,9 +364,11 @@ async function buildPdf(id) {
     });
 
     const safeName = title.replace(/[\\/:*?"<>|~\x00-\x1f]/g, " ").replace(/\s+/g, " ").trim().replace(/^\.+|\.+$/g, "").slice(0, 80) || "Movie";
+    const filename = `Glossa/${safeName} - Vocabulary.pdf`;
+    pendingNames.push(filename);
     const downloadId = await chrome.downloads.download({
       url: "data:application/pdf;base64," + btoa(pdf),
-      filename: `Glossa/${safeName} - Vocabulary.pdf`,
+      filename,
       conflictAction: "uniquify",
       saveAs: false,
     });
@@ -359,6 +388,13 @@ async function buildPdf(id) {
     resumePending();
   }
 }
+
+// Some browsers and download-manager extensions rename files; this keeps the film's name on every PDF.
+const pendingNames = [];
+chrome.downloads.onDeterminingFilename.addListener((item, suggest) => {
+  if (item.byExtensionId !== chrome.runtime.id || !pendingNames.length) return;
+  suggest({ filename: pendingNames.shift(), conflictAction: "uniquify" });
+});
 
 // Called automatically: builds only when most of the movie has been watched.
 async function finishIfWatched(id) {

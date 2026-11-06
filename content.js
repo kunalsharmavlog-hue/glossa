@@ -75,7 +75,7 @@
   }
 
   function readSubtitle() {
-    const boxes = document.querySelectorAll(".player-timedtext-text-container");
+    const boxes = document.querySelectorAll(".player-timedtext-text-container, .player-timedtext [class*=\"text-container\"]");
     if (!boxes.length) return "";
     return [...boxes].map((b) => b.innerText || b.textContent).join(" ").replace(/\s+/g, " ").trim();
   }
