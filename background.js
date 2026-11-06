@@ -284,7 +284,7 @@ async function buildPdf(id) {
   building.add(id);
   // Chrome stops an idle background script after 30 seconds; regular API calls prevent that.
   const keepAlive = setInterval(() => chrome.runtime.getPlatformInfo(() => {}), 20000);
-  chrome.action.setBadgeBackgroundColor({ color: "#e50914" });
+  chrome.action.setBadgeBackgroundColor({ color: "#141311" });
   chrome.action.setBadgeText({ text: "..." });
   try {
     const key = sessionKey(id);
@@ -339,7 +339,7 @@ async function buildPdf(id) {
     const safeName = title.replace(/[\\/:*?"<>|~\x00-\x1f]/g, " ").replace(/\s+/g, " ").trim().replace(/^\.+|\.+$/g, "").slice(0, 80) || "Movie";
     const downloadId = await chrome.downloads.download({
       url: "data:application/pdf;base64," + btoa(pdf),
-      filename: `Netflix Vocabulary/${safeName} - Vocabulary.pdf`,
+      filename: `Glossa/${safeName} - Vocabulary.pdf`,
       conflictAction: "uniquify",
       saveAs: false,
     });

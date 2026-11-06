@@ -138,7 +138,7 @@
     else if (!video.paused) playedWithoutSubs += delta;
 
     if (playedWithoutSubs > NO_SUBS_WARNING_S && !session.lines.length) {
-      warnOnce("nosubs", "SubVocab: no subtitles found. Please turn on English subtitles in the player.");
+      warnOnce("nosubs", "Glossa: no subtitles found. Please turn on English subtitles in the player.");
     }
 
     readTitleFromPlayer();
@@ -173,9 +173,9 @@
     } else if (subtitleState === "other-language") {
       hiddenByUs = false;
       applySubtitleVisibility();
-      warnOnce("lang", "SubVocab: words are collected only from English subtitles. Subtitles in another language are on.");
+      warnOnce("lang", "Glossa: words are collected only from English subtitles. Subtitles in another language are on.");
     } else if (subtitleState === "no-english") {
-      warnOnce("noeng", "SubVocab: this movie has no English subtitles with the current audio.");
+      warnOnce("noeng", "Glossa: this movie has no English subtitles with the current audio.");
     }
   });
 

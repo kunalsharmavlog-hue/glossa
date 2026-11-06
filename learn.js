@@ -1,11 +1,11 @@
 // Pause & Pick: when the movie is paused, the subtitle on screen turns into text you can select.
 // Click a word, or drag across a phrase or the whole line, and its meaning appears on screen.
 (function () {
-  if (window.__subvocabPick) return; // Already running after an extension reload.
-  window.__subvocabPick = true;
+  if (window.__glossaPick) return; // Already running after an extension reload.
+  window.__glossaPick = true;
 
   const POLL_MS = 250, KEEP_LAST_CUE_S = 12, SHOW_DELAY_MS = 180;
-  const P = "subvocab-"; // Class prefix, so that Netflix's styles and ours never mix.
+  const P = "glossa-"; // Class prefix, so that Netflix's styles and ours never mix.
 
   let enabled = true, video = null, bar = null, textEl = null, card = null, request = 0;
   let lastCue = "", lastCueAt = -1, showTimer = null;
@@ -26,34 +26,34 @@
     .${P}bar, .${P}card { all: initial; position: fixed; z-index: 2147483646; box-sizing: border-box;
       display: block; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #fff; }
     .${P}bar { left: 50%; bottom: 13vh; transform: translateX(-50%); max-width: min(86vw, 1100px);
-      padding: 14px 22px 16px; border-radius: 16px; background: rgba(12,12,16,.78);
+      padding: 14px 22px 16px; border-radius: 16px; background: rgba(20,19,17,.78);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       box-shadow: 0 10px 40px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.08);
       animation: ${P}in .22s ease-out; cursor: auto; pointer-events: auto; }
-    .${P}hint { display: block; font-size: 12px; letter-spacing: .04em; color: #ffd166; margin: 0 0 6px;
+    .${P}hint { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #F2C94C; margin: 0 0 6px;
       text-align: center; user-select: none; -webkit-user-select: none; }
     .${P}text { display: block; font-size: clamp(20px, 2.5vw, 42px); line-height: 1.35; font-weight: 600;
       text-align: center; white-space: pre-line; cursor: text; user-select: text; -webkit-user-select: text;
       text-shadow: 0 1px 2px rgba(0,0,0,.6); }
-    .${P}text::selection { background: #ffd166; color: #111; text-shadow: none; }
-    .${P}card { width: min(420px, 90vw); padding: 16px 18px 14px; border-radius: 14px; background: #16161c;
-      box-shadow: 0 18px 50px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.1);
+    .${P}text::selection { background: #F2C94C; color: #111; text-shadow: none; }
+    .${P}card { width: min(420px, 90vw); padding: 18px 20px 16px; border-radius: 16px; background: #141311;
+      box-shadow: 0 24px 70px rgba(0,0,0,.55), inset 0 0 0 1px rgba(237,232,220,.12);
       font-size: 14px; line-height: 1.45; animation: ${P}in .18s ease-out; pointer-events: auto; }
     .${P}card * { box-sizing: border-box; font-family: inherit; }
     .${P}head { display: flex; align-items: baseline; gap: 8px; margin: 0 26px 8px 0; flex-wrap: wrap; }
-    .${P}word { font-size: 22px; font-weight: 700; color: #ffd166; word-break: break-word; }
+    .${P}word { font: 500 26px/1.15 ui-serif, "New York", Georgia, serif; color: #F2C94C; word-break: break-word; letter-spacing: -.01em; }
     .${P}pos { font-size: 13px; font-style: italic; color: #9a9aa6; }
-    .${P}row { display: block; margin: 5px 0; color: #e8e8ee; }
-    .${P}label { display: inline-block; min-width: 68px; color: #8d8d99; font-size: 12px;
-      text-transform: uppercase; letter-spacing: .05em; }
+    .${P}row { display: block; margin: 6px 0; color: #EDE8DC; }
+    .${P}label { display: inline-block; min-width: 74px; color: #8a857a; font-size: 10.5px;
+      text-transform: uppercase; letter-spacing: .12em; }
     .${P}hi { font-size: 17px; }
     .${P}muted { color: #9a9aa6; }
-    .${P}actions { display: flex; gap: 8px; margin-top: 12px; }
-    .${P}btn { all: unset; cursor: pointer; padding: 7px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    .${P}actions { display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(237,232,220,.1); }
+    .${P}btn { all: unset; cursor: pointer; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 600;
       background: rgba(255,255,255,.08); color: #fff; }
     .${P}btn:hover { background: rgba(255,255,255,.16); }
-    .${P}btn.${P}primary { background: #ffd166; color: #111; }
-    .${P}btn.${P}primary:hover { background: #ffdd8a; }
+    .${P}btn.${P}primary { background: #F2C94C; color: #111; }
+    .${P}btn.${P}primary:hover { background: #F6D778; }
     .${P}btn[disabled] { opacity: .65; cursor: default; }
     .${P}close { all: unset; position: absolute; top: 10px; right: 12px; cursor: pointer; color: #8d8d99;
       font-size: 20px; line-height: 1; }
@@ -93,7 +93,7 @@
     if (!text) return;
 
     bar = el("div", "bar");
-    bar.append(el("span", "hint", "SubVocab · click a word or drag over a phrase"));
+    bar.append(el("span", "hint", "Glossa  ·  click a word, or drag over a phrase"));
     textEl = el("span", "text", text);
     bar.append(textEl);
     shield(bar);
@@ -167,7 +167,7 @@
 
     let res;
     try { res = await chrome.runtime.sendMessage({ type: "explain", text }); }
-    catch { res = { ok: false, error: "SubVocab was updated. Refresh this page to use it again." }; }
+    catch { res = { ok: false, error: "Glossa was updated. Refresh this page to use it again." }; }
     if (id !== request || !card) return;
 
     card.replaceChildren(x, head);
