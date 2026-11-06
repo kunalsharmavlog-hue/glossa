@@ -189,25 +189,78 @@
   @media (max-width: 900px) { .phone:not(.mid) { display: none; } .stat { display: none; } }
 
   /* Feature cards */
-  .fcards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .fc { border-radius: 16px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
-  .fc .top { padding: 18px 18px 0; display: flex; justify-content: space-between; align-items: center; }
-  .fc .top b { font: 600 17px var(--f); letter-spacing: -.02em; }
-  .fc .top i { width: 28px; height: 28px; border-radius: 50%; background: var(--gold); color: #000; display: grid; place-items: center; font-style: normal; font-weight: 700; transition: transform .3s; }
-  .fc:hover .top i { transform: rotate(45deg); }
-  .fc p { margin: 6px 18px 0; color: var(--t2); font-size: 13.5px; }
-  .fc .viz { height: 240px; margin-top: 18px; position: relative; overflow: hidden; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 120%, rgba(146,94,18,.4), transparent 70%); }
-  .msub { font: 600 16px "Helvetica Neue", Arial, sans-serif; padding: 10px 16px; border-radius: 10px; background: rgba(20,19,17,.9); box-shadow: inset 0 0 0 1px var(--line); }
-  .msub mark { background: var(--gold); color: #000; border-radius: 3px; padding: 0 3px; }
-  .mcur { position: absolute; width: 18px; left: 60%; top: 58%; animation: tap 3s ease-in-out infinite; }
-  @keyframes tap { 0%, 100% { transform: translate(30px, 26px); } 40%, 60% { transform: none; } 50% { transform: scale(.85); } }
-  .langs { display: grid; gap: 8px; width: 78%; }
-  .langs div { display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: var(--card2); box-shadow: inset 0 0 0 1px var(--line); }
-  .langs small { color: var(--t3); }
-  .wave { display: flex; align-items: center; gap: 4px; height: 60px; width: 80%; }
-  .wave i { flex: 1; border-radius: 3px; background: var(--gold); height: 30%; animation: wv 1.2s ease-in-out infinite; animation-delay: calc(var(--i) * -.07s); }
-  @keyframes wv { 50% { height: 100%; } }
-  @media (max-width: 900px) { .fcards { grid-template-columns: 1fr; } }
+  /* Feature bento */
+  .bento { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: auto auto; gap: 16px; }
+  .bx { position: relative; border-radius: 24px; padding: 28px; overflow: hidden; isolation: isolate;
+    background: linear-gradient(180deg, #141416 0%, #0c0c0d 100%);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s; box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 30px 60px -30px rgba(0,0,0,.8); }
+  .bx::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; z-index: -1; pointer-events: none;
+    background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.04) 40%, rgba(242,201,76,.18));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .bx::after { content: ""; position: absolute; inset: auto -20% -60% -20%; height: 80%; z-index: -2; background: radial-gradient(closest-side, rgba(242,201,76,.10), transparent); opacity: 0; transition: opacity .5s; }
+  .bx:hover { transform: translateY(-4px); }
+  .bx:hover::after { opacity: 1; }
+  .bx .kick { display: inline-flex; align-items: center; gap: 8px; color: var(--gold); margin-bottom: 14px; }
+  .bx .kick::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 12px currentColor; }
+  .bx h3 { margin: 0 0 8px; font: 600 clamp(22px, 2vw, 28px)/1.15 var(--f); letter-spacing: -.03em; }
+  .bx p { margin: 0; color: var(--t2); font-size: 15px; line-height: 1.55; max-width: 400px; }
+  .bx.big { grid-row: span 2; display: flex; flex-direction: column; }
+  .tagrow { display: flex; gap: 6px; margin-top: 18px; flex-wrap: wrap; }
+  .tagrow span { font-size: 12.5px; font-weight: 500; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); color: #d8d8dc; }
+
+  /* Card 1: a tiny paused player that plays the Pause & Pick moment on a loop */
+  .mini { position: relative; margin-top: 28px; flex: 1; min-height: 340px; border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 24px 60px rgba(0,0,0,.6); }
+  .mini .ph { position: absolute; inset: 0; filter: brightness(.42) saturate(.85); transform: scale(1.04); }
+  .mini .top { position: absolute; left: 16px; right: 16px; top: 14px; display: flex; justify-content: space-between; align-items: center; color: rgba(255,255,255,.8); font: 600 10.5px var(--f); letter-spacing: .12em; text-transform: uppercase; }
+  .mini .top b { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+  .mini .top b::before { content: ""; width: 9px; height: 11px; border-inline: 3px solid currentColor; box-sizing: border-box; }
+  .mini .rec { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; background: rgba(0,0,0,.45); backdrop-filter: blur(6px); }
+  .mini .rec::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .mini .bar { position: absolute; left: 16px; right: 16px; bottom: 14px; height: 3px; border-radius: 2px; background: rgba(255,255,255,.2); }
+  .mini .bar::after { content: ""; position: absolute; inset: 0 58% 0 0; background: #fff; border-radius: 2px; }
+  .mini .sb { position: absolute; left: 50%; bottom: 13%; translate: -50% 0; padding: 10px 18px 12px; border-radius: 12px; background: rgba(20,19,17,.82); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); white-space: nowrap; text-align: center; }
+  .mini .sb small { display: block; font: 600 8.5px var(--f); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+  .mini .sb span { font: 600 clamp(14px, 1.5vw, 19px) "Helvetica Neue", Arial, sans-serif; color: #fff; }
+  .mini .sb mark { position: relative; color: #fff; background: none; isolation: isolate; animation: hlText 7s infinite; }
+  .mini .sb mark::before { content: ""; position: absolute; inset: 2px -3px -1px; border-radius: 4px; background: var(--gold); z-index: -1; transform: scaleX(0); transform-origin: left; animation: hl 7s infinite; }
+  .mini .gc { position: absolute; left: 50%; bottom: calc(13% + 74px); translate: -50% 0; width: min(290px, 78%); padding: 14px 16px 12px; border-radius: 14px; background: rgba(20,19,17,.96); color: #ede8dc; font-size: 12.5px; box-shadow: 0 24px 60px rgba(0,0,0,.6), inset 0 0 0 1px rgba(237,232,220,.14); animation: card 7s infinite; }
+  .mini .gc b { display: block; font: 600 20px/1.1 Georgia, "New York", serif; color: var(--gold); margin-bottom: 4px; }
+  .mini .gc b i { font: italic 400 11.5px var(--f); color: #8f897c; margin-left: 6px; }
+  .mini .gc .r { display: flex; gap: 10px; margin-top: 5px; }
+  .mini .gc .r em { flex: 0 0 60px; font: 600 9px var(--f); font-style: normal; letter-spacing: .12em; text-transform: uppercase; color: #8f897c; padding-top: 3px; }
+  .mini .cur { position: absolute; width: 20px; left: 58%; bottom: 15%; z-index: 3; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); animation: cur 7s infinite; }
+  @keyframes cur { 0% { transform: translate(140px, 70px); opacity: 0; } 8% { opacity: 1; } 24%, 30% { transform: translate(0, 0); } 27% { transform: translate(0,0) scale(.82); } 86% { opacity: 1; transform: translate(0,0); } 100% { transform: translate(140px, 70px); opacity: 0; } }
+  @keyframes hl { 0%, 26% { transform: scaleX(0); } 34%, 88% { transform: scaleX(1); } 96%, 100% { transform: scaleX(0); } }
+  @keyframes hlText { 0%, 28% { color: #fff; } 32%, 90% { color: #111; } 96%, 100% { color: #fff; } }
+  @keyframes card { 0%, 34% { opacity: 0; transform: translateY(10px) scale(.97); } 42%, 88% { opacity: 1; transform: none; } 95%, 100% { opacity: 0; transform: translateY(6px); } }
+
+  /* Card 2: one word, three ways to understand it */
+  .trio { margin-top: 24px; border-radius: 16px; background: rgba(255,255,255,.03); box-shadow: inset 0 0 0 1px rgba(255,255,255,.07); padding: 18px 20px 6px; }
+  .trio .w { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .trio .w b { font: 600 30px/1 Georgia, "New York", serif; color: #fff; letter-spacing: -.01em; }
+  .trio .w small { color: var(--t3); font-size: 12.5px; font-style: italic; }
+  .trio .row { display: grid; grid-template-columns: 92px 1fr; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .trio .row:last-child { border-bottom: 0; }
+  .trio .row span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--t2); font-size: 12px; font-weight: 500; }
+  .trio .row span:first-child::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
+  .trio .row span:last-child { font-size: 16px; color: #f2f2f4; }
+  .trio [data-v] { transition: opacity .35s, transform .35s; }
+  .trio.swap [data-v] { opacity: 0; transform: translateY(4px); }
+
+  /* Card 3: hear it said, for real */
+  .say { margin-top: 24px; display: flex; align-items: center; gap: 16px; border-radius: 16px; background: rgba(255,255,255,.03); box-shadow: inset 0 0 0 1px rgba(255,255,255,.07); padding: 16px 18px; }
+  .say button { all: unset; cursor: pointer; flex: none; width: 52px; height: 52px; border-radius: 50%; background: var(--gold); color: #111; display: grid; place-items: center; box-shadow: 0 10px 30px rgba(242,201,76,.25); transition: transform .2s; }
+  .say button:hover { transform: scale(1.05); }
+  .say button:active { transform: scale(.95); }
+  .say button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .say .meta { min-width: 0; flex: 1; }
+  .say .meta b { display: block; font: 600 18px/1.2 var(--f); letter-spacing: -.02em; }
+  .say .meta small { color: var(--t3); font-size: 12.5px; }
+  .bars { display: flex; align-items: center; gap: 3px; height: 40px; margin-top: 10px; }
+  .bars i { flex: 1; min-width: 2px; border-radius: 2px; background: rgba(255,255,255,.18); height: var(--h); transition: background .15s; }
+  .bars i.on { background: var(--gold); }
+  @media (max-width: 900px) { .bento { grid-template-columns: 1fr; } .bx.big { grid-row: auto; } .mini { min-height: 300px; } .bx { padding: 22px; } }
+  @media (prefers-reduced-motion: reduce) { .mini .gc { opacity: 1; } .mini .sb mark { color: #111; } .mini .sb mark::before { transform: scaleX(1); } .mini .cur { display: none; } }
 
   /* Dashboard */
   .dash { margin-top: 50px; border-radius: 14px; background: #0b0b0c; box-shadow: 0 40px 100px rgba(0,0,0,.6), inset 0 0 0 1px var(--line); overflow: hidden; }
@@ -403,10 +456,41 @@
 
   <section class="sec" style="padding-top:40px">
     <div class="wrap">
-      <div class="fcards">
-        <div class="fc rv"><div class="top"><b>Pause &amp; Pick</b><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></i></div><p>Click a word, or drag over a phrase or the whole line.</p><div class="viz"><div class="msub">It was a <mark>piece of cake</mark>.</div><svg class="mcur" viewBox="0 0 24 24"><path d="M4 2l15 11-7 1 4 8-3 1-4-8-5 5z" fill="#fff" stroke="#111" stroke-width="1.3"/></svg></div></div>
-        <div class="fc rv" style="--d:.06s"><div class="top"><b>Hindi + Hinglish</b><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></i></div><p>Every meaning in simple English, Hindi script and Roman letters.</p><div class="viz"><div class="langs"><div><small class="cap">English</small><span>unwilling</span></div><div><small class="cap">Hindi</small><span class="hi">अनिच्छुक</span></div><div><small class="cap">Hinglish</small><span>anichchhuk</span></div></div></div></div>
-        <div class="fc rv" style="--d:.12s"><div class="top"><b>Hear it said</b><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></i></div><p>Tap Listen on any card to hear the pronunciation.</p><div class="viz"><div class="wave" id="wave"></div></div></div>
+      <div class="bento">
+        <article class="bx big rv">
+          <span class="cap kick">Pause &amp; Pick</span>
+          <h3>Pause the film. Pick any word.</h3>
+          <p>The paused subtitle turns into text you can select. Click one word, or drag across a phrase or the whole line, and the meaning appears right on screen.</p>
+          <div class="tagrow"><span>One word</span><span>An idiom</span><span>A whole line</span></div>
+          <div class="mini" aria-hidden="true">
+            <div class="ph" data-img="1650476110251-be9128fb1e40" data-w="1200"></div>
+            <div class="top"><b>Paused · 31:05</b><span class="rec">Glossa</span></div>
+            <div class="gc"><b>piece of cake<i>idiom</i></b><div class="r"><em>English</em><span>something very easy to do</span></div><div class="r"><em>Hindi</em><span class="hi">बाएँ हाथ का खेल</span></div></div>
+            <div class="sb"><small>Glossa · click a word, or drag over a phrase</small><span>Breaking in? It was a <mark>piece of cake</mark>.</span></div>
+            <svg class="cur" viewBox="0 0 24 24"><path d="M4 2l15 11-7 1 4 8-3 1-4-8-5 5z" fill="#fff" stroke="#111" stroke-width="1.3"/></svg>
+            <div class="bar"></div>
+          </div>
+        </article>
+        <article class="bx rv">
+          <span class="cap kick">Hindi + Hinglish</span>
+          <h3>Meaning that feels like home</h3>
+          <p>Every word comes in simple English, in Hindi script, and in Hinglish for when you don't read Devanagari.</p>
+          <div class="trio" id="trio">
+            <div class="w"><b data-v="w">reluctant</b><small data-v="pos">adjective</small></div>
+            <div class="row" style="--c:#f2c94c"><span>English</span><span data-v="en">not wanting to do something</span></div>
+            <div class="row" style="--c:#fb7185"><span>Hindi</span><span class="hi" data-v="hi">अनिच्छुक</span></div>
+            <div class="row" style="--c:#60a5fa"><span>Hinglish</span><span data-v="hg">anichchhuk</span></div>
+          </div>
+        </article>
+        <article class="bx rv">
+          <span class="cap kick">Hear it said</span>
+          <h3>Say it right the first time</h3>
+          <p>Every card has a Listen button. Try it here.</p>
+          <div class="say">
+            <button type="button" id="sayBtn" aria-label="Play pronunciation of ambiguous"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+            <div class="meta"><b>ambiguous</b><small>am·BIG·yoo·us · having more than one meaning</small><div class="bars" id="bars" aria-hidden="true"></div></div>
+          </div>
+        </article>
       </div>
 
       <div class="head" style="margin-top:130px">
@@ -517,7 +601,7 @@
 
   // Reveal on scroll.
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.12 });
-  $$(".rowcards, .fcards, .ups, .stack, .list, .phones").forEach((g) => [...g.children].forEach((c, i) => { if (!c.style.getPropertyValue("--d")) c.style.setProperty("--d", (i * 0.06).toFixed(2) + "s"); }));
+  $$(".rowcards, .bento, .ups, .stack, .list, .phones").forEach((g) => [...g.children].forEach((c, i) => { if (!c.style.getPropertyValue("--d")) c.style.setProperty("--d", (i * 0.06).toFixed(2) + "s"); }));
   $$(".rowcards > .lc").forEach((c) => c.classList.add("rv"));
   $$(".rv").forEach((n) => io.observe(n));
 
@@ -526,7 +610,44 @@
   $$(".navbtns button").forEach((b) => b.addEventListener("click", () => row.scrollBy({ left: Number(b.dataset.d) * 340, behavior: "smooth" })));
 
   // Sound wave.
-  $("#wave").innerHTML = Array.from({ length: 40 }, (_, i) => `<i style="--i:${i}"></i>`).join("");
+  // Hear it said: real speech, and a waveform that fills while it plays.
+  const bars = $("#bars");
+  bars.innerHTML = Array.from({ length: 44 }, (_, i) => {
+    const h = 18 + Math.round(82 * Math.abs(Math.sin(i * 0.55) * Math.cos(i * 0.17)));
+    return `<i style="--h:${h}%"></i>`;
+  }).join("");
+  const barEls = [...bars.children];
+  let playTimer = null;
+  function fill(ms) {
+    clearInterval(playTimer);
+    let k = 0;
+    barEls.forEach((b) => b.classList.remove("on"));
+    playTimer = setInterval(() => { if (k >= barEls.length) { clearInterval(playTimer); setTimeout(() => barEls.forEach((b) => b.classList.remove("on")), 500); return; } barEls[k++].classList.add("on"); }, ms / barEls.length);
+  }
+  $("#sayBtn").addEventListener("click", () => {
+    fill(1100);
+    if ("speechSynthesis" in window) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance("ambiguous"); u.lang = "en-US"; u.rate = 0.85; speechSynthesis.speak(u); }
+  });
+
+  // Hindi + Hinglish: a few words take turns.
+  const TRIO = [
+    ["reluctant", "adjective", "not wanting to do something", "अनिच्छुक", "anichchhuk"],
+    ["naive", "adjective", "without much experience of life", "भोला", "bhola"],
+    ["give up", "idiom", "to stop trying", "हार मानना", "haar manna"],
+    ["ominous", "adjective", "giving the feeling something bad will happen", "अशुभ", "ashubh"],
+  ];
+  const trio = $("#trio");
+  let ti = 0;
+  if (!reduce) setInterval(() => {
+    trio.classList.add("swap");
+    setTimeout(() => {
+      ti = (ti + 1) % TRIO.length;
+      const [w, pos, en, hi, hg] = TRIO[ti];
+      const set = (k, v) => (trio.querySelector(`[data-v="${k}"]`).textContent = v);
+      set("w", w); set("pos", pos); set("en", en); set("hi", hi); set("hg", hg);
+      trio.classList.remove("swap");
+    }, 350);
+  }, 3400);
 
   // Genre wheel: each genre has its own photo and a word you might learn.
   const G = [
