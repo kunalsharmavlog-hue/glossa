@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Glossa",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Learn English from what you watch: pause, pick any subtitle word for its meaning in English, Hindi and Hinglish, and get a vocabulary PDF when the movie ends.",
   "icons": {
     "16": "icons/icon16.png",

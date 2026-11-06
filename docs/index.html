@@ -8,7 +8,7 @@
 <meta property="og:title" content="Glossa · Learn English from every movie">
 <meta property="og:description" content="Pause Netflix, click any subtitle word, and see what it means in English, Hindi and Hinglish. Free and open source.">
 <meta property="og:image" content="https://kunalsharmavlog-hue.github.io/glossa/assets/icon-512.png">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0b0c10">
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,8 +17,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #000; --card: #0f0f10; --card2: #18181a; --line: rgba(255,255,255,.09); --t2: #a1a1a6; --t3: #8e8e93;
-    --gold: #f2c94c; --gold2: #ffdc73; --ink: #141311; --cream: #ede8dc; --green: #34d399;
+    --bg: #0b0c10; --card: #11141a; --card2: #181c24; --line: rgba(255,255,255,.09); --t2: #a1a1a6; --t3: #8e8e93;
+    --gold: #b8f26b; --gold2: #cdf78f; --sel: #2f7bff; --ink: #141311; --cream: #ede8dc; --green: #34d399;
     --f: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --gut: clamp(16px, 2.6vw, 36px);
   }
@@ -27,7 +27,7 @@
   body { margin: 0; background: var(--bg); color: #fff; font: 15px/1.5 var(--f); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   a { color: inherit; text-decoration: none; }
   img { display: block; max-width: 100%; }
-  ::selection { background: var(--gold); color: #000; }
+  
   .hi { font-family: "Noto Sans Devanagari", var(--f); }
   .wrap { width: min(1360px, 100% - var(--gut) * 2); margin: 0 auto; }
   .cap { font: 600 10.5px/1 var(--f); letter-spacing: .12em; text-transform: uppercase; }
@@ -47,12 +47,13 @@
   .skip { position: absolute; left: 16px; top: -60px; z-index: 100; background: var(--gold); color: #000; padding: 10px 16px; border-radius: 999px; font-weight: 600; }
   .skip:focus { top: 12px; }
   a, button, summary { cursor: pointer; }
-  .stage::before { content: ""; position: absolute; left: 50%; top: 52%; width: 900px; height: 600px; translate: -50% -50%; background: radial-gradient(closest-side, rgba(242,201,76,.12), transparent); z-index: 1; pointer-events: none; }
+  .stage::before { content: ""; position: absolute; left: 50%; top: 52%; width: 900px; height: 600px; translate: -50% -50%; background: radial-gradient(closest-side, rgba(184,242,107,.12), transparent); z-index: 1; pointer-events: none; }
   /* Nav */
   .nav { position: fixed; inset: 0 0 auto; z-index: 80; transition: background .3s; }
   .nav.solid { background: rgba(0,0,0,.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   .nav .wrap { height: 60px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
-  .logo { display: flex; align-items: center; gap: 8px; font: 700 19px/1 var(--f); letter-spacing: -.03em; }
+  .logo { display: flex; align-items: center; gap: 9px; font: 800 21px/1 var(--f); letter-spacing: -.045em; }
+  .logo svg { width: 28px !important; height: 28px !important; }
   .logo svg { width: 24px; height: 24px; }
   .nav nav { display: flex; gap: 40px; color: var(--t2); }
   .nav nav a:hover { color: #fff; }
@@ -89,7 +90,7 @@
   .main { position: absolute; z-index: 4; left: 50%; top: 50%; width: 52vw; aspect-ratio: 16/9.4; translate: -50% -50%; border-radius: 16px; overflow: hidden; transform: scale(0); will-change: transform; box-shadow: 0 40px 120px rgba(0,0,0,.7); }
   .main .ph { position: absolute; inset: 0; filter: brightness(.55); }
   .main .sub { position: absolute; left: 50%; bottom: 12%; translate: -50% 0; white-space: nowrap; font: 600 clamp(12px, 1.6vw, 22px) "Helvetica Neue", Arial, sans-serif; text-shadow: 0 2px 8px #000; }
-  .main .sub mark { background: var(--gold); color: #000; text-shadow: none; padding: 0 4px; border-radius: 3px; }
+  .main .sub mark { background: var(--sel); color: #fff; text-shadow: none; padding: 0 4px; border-radius: 3px; }
   .main .gl { position: absolute; left: 50%; bottom: 30%; translate: -50% 0; width: min(300px, 46%); }
   .mos { position: absolute; z-index: 3; border-radius: 14px; overflow: hidden; opacity: 0; will-change: transform, opacity; }
   .mos .ph { width: 100%; height: 100%; }
@@ -127,7 +128,7 @@
   .lc .st b { display: block; font: 600 22px/1 var(--f); letter-spacing: -.03em; margin-bottom: 6px; }
   .lc .st span { color: var(--t3); }
   .lc .words { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
-  .lc .words i { font-style: normal; font-size: 12px; padding: 4px 9px; border-radius: 999px; background: rgba(242,201,76,.12); color: var(--gold); }
+  .lc .words i { font-style: normal; font-size: 12px; padding: 4px 9px; border-radius: 999px; background: rgba(184,242,107,.12); color: var(--gold); }
   .navbtns { display: flex; gap: 6px; }
   .navbtns button { all: unset; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: #000; display: grid; place-items: center; }
 
@@ -152,7 +153,7 @@
 
   /* Product stage with floating stats */
   .prod { padding: 140px 0 120px; text-align: center; position: relative; overflow: hidden; }
-  .prod::before { content: ""; position: absolute; left: 50%; top: 58%; width: 1300px; height: 900px; translate: -50% -50%; background: radial-gradient(closest-side, rgba(146,94,18,.55), rgba(70,40,8,.25) 55%, transparent); pointer-events: none; }
+  .prod::before { content: ""; position: absolute; left: 50%; top: 58%; width: 1300px; height: 900px; translate: -50% -50%; background: radial-gradient(closest-side, rgba(64,110,36,.45), rgba(22,40,14,.25) 55%, transparent); pointer-events: none; }
   .prod h2 { position: relative; margin: 0 0 16px; font: 600 clamp(32px, 3.8vw, 54px)/1.04 var(--f); letter-spacing: -.035em; }
   .prod .pill { position: relative; }
   .phones { position: relative; display: flex; justify-content: center; align-items: flex-end; gap: 18px; margin-top: 60px; }
@@ -170,19 +171,19 @@
   .scr .ttl .tags span.y { background: var(--gold); color: #000; font-weight: 600; }
   .scr .gl { position: absolute; left: 12px; right: 12px; top: 18%; width: auto; }
   .scr .pdf { position: absolute; inset: 16px 16px auto; border-radius: 6px; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
-  .pop { position: absolute; inset: 0; background: #f4efe6; color: #141311; padding: 20px 16px; font-size: 12px; }
-  .pop h4 { margin: 0 0 14px; display: flex; align-items: center; gap: 8px; font: 600 18px var(--f); }
+  .pop { position: absolute; inset: 0; background: #0f1217; color: #eef0f5; padding: 20px 16px; font-size: 12px; }
+  .pop h4 { margin: 0 0 14px; display: flex; align-items: center; gap: 8px; font: 800 19px var(--f); letter-spacing: -.045em; }
   .pop h4 svg { width: 22px; height: 22px; }
-  .pop .sel { border: 1px solid rgba(20,19,17,.12); background: #fff; border-radius: 9px; padding: 8px 10px; margin-bottom: 12px; }
-  .pop .tg { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid rgba(20,19,17,.1); }
-  .pop .tg i { width: 30px; height: 18px; border-radius: 999px; background: #141311; position: relative; }
-  .pop .tg i::after { content: ""; position: absolute; right: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); }
-  .pop .tg i.off { background: rgba(20,19,17,.2); }
+  .pop .sel { border: 1px solid rgba(255,255,255,.1); background: #181c24; border-radius: 9px; padding: 8px 10px; margin-bottom: 12px; }
+  .pop .tg { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid rgba(255,255,255,.1); }
+  .pop .tg i { width: 30px; height: 18px; border-radius: 999px; background: var(--gold); position: relative; }
+  .pop .tg i::after { content: ""; position: absolute; right: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #0b0c10; }
+  .pop .tg i.off { background: rgba(255,255,255,.16); }
   .pop .tg i.off::after { right: auto; left: 2px; background: #fff; }
-  .pop .mv { padding: 10px 0; border-top: 1px solid rgba(20,19,17,.1); }
+  .pop .mv { padding: 10px 0; border-top: 1px solid rgba(255,255,255,.1); }
   .pop .mv b { display: block; font-size: 13px; }
-  .pop .mv small { color: #7a756b; }
-  .pop .mv .btn { display: inline-block; margin-top: 6px; background: #141311; color: #f4efe6; border-radius: 999px; padding: 5px 11px; font-weight: 600; font-size: 11px; }
+  .pop .mv small { color: #9aa0ab; }
+  .pop .mv .btn { display: inline-block; margin-top: 6px; background: var(--gold); color: #0b0c10; border-radius: 999px; padding: 5px 11px; font-weight: 600; font-size: 11px; }
   .stat { position: absolute; z-index: 2; padding: 12px 16px; border-radius: 14px; background: rgba(15,15,16,.85); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px var(--line); text-align: left; }
   .stat b { display: block; font: 600 26px/1 var(--f); letter-spacing: -.03em; }
   .stat span { color: var(--t2); }
@@ -195,9 +196,9 @@
     background: linear-gradient(180deg, #141416 0%, #0c0c0d 100%);
     transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s; box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 30px 60px -30px rgba(0,0,0,.8); }
   .bx::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; z-index: -1; pointer-events: none;
-    background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.04) 40%, rgba(242,201,76,.18));
+    background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.04) 40%, rgba(184,242,107,.18));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-  .bx::after { content: ""; position: absolute; inset: auto -20% -60% -20%; height: 80%; z-index: -2; background: radial-gradient(closest-side, rgba(242,201,76,.10), transparent); opacity: 0; transition: opacity .5s; }
+  .bx::after { content: ""; position: absolute; inset: auto -20% -60% -20%; height: 80%; z-index: -2; background: radial-gradient(closest-side, rgba(184,242,107,.10), transparent); opacity: 0; transition: opacity .5s; }
   .bx:hover { transform: translateY(-4px); }
   .bx:hover::after { opacity: 1; }
   .bx .kick { display: inline-flex; align-items: center; gap: 8px; color: var(--gold); margin-bottom: 14px; }
@@ -222,7 +223,7 @@
   .mini .sb small { display: block; font: 600 8.5px var(--f); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
   .mini .sb span { font: 600 clamp(14px, 1.5vw, 19px) "Helvetica Neue", Arial, sans-serif; color: #fff; }
   .mini .sb mark { position: relative; color: #fff; background: none; isolation: isolate; animation: hlText 7s infinite; }
-  .mini .sb mark::before { content: ""; position: absolute; inset: 2px -3px -1px; border-radius: 4px; background: var(--gold); z-index: -1; transform: scaleX(0); transform-origin: left; animation: hl 7s infinite; }
+  .mini .sb mark::before { content: ""; position: absolute; inset: 1px -2px -1px; border-radius: 2px; background: var(--sel); z-index: -1; transform: scaleX(0); transform-origin: left; animation: hl 7s infinite; }
   .mini .gc { position: absolute; left: 50%; bottom: calc(13% + 74px); translate: -50% 0; width: min(290px, 78%); padding: 14px 16px 12px; border-radius: 14px; background: rgba(20,19,17,.96); color: #ede8dc; font-size: 12.5px; box-shadow: 0 24px 60px rgba(0,0,0,.6), inset 0 0 0 1px rgba(237,232,220,.14); animation: card 7s infinite; }
   .mini .gc b { display: block; font: 600 20px/1.1 Georgia, "New York", serif; color: var(--gold); margin-bottom: 4px; }
   .mini .gc b i { font: italic 400 11.5px var(--f); color: #8f897c; margin-left: 6px; }
@@ -231,7 +232,7 @@
   .mini .cur { position: absolute; width: 20px; left: 58%; bottom: 15%; z-index: 3; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); animation: cur 7s infinite; }
   @keyframes cur { 0% { transform: translate(140px, 70px); opacity: 0; } 8% { opacity: 1; } 24%, 30% { transform: translate(0, 0); } 27% { transform: translate(0,0) scale(.82); } 86% { opacity: 1; transform: translate(0,0); } 100% { transform: translate(140px, 70px); opacity: 0; } }
   @keyframes hl { 0%, 26% { transform: scaleX(0); } 34%, 88% { transform: scaleX(1); } 96%, 100% { transform: scaleX(0); } }
-  @keyframes hlText { 0%, 28% { color: #fff; } 32%, 90% { color: #111; } 96%, 100% { color: #fff; } }
+  @keyframes hlText { 0%, 100% { color: #fff; } }
   @keyframes card { 0%, 34% { opacity: 0; transform: translateY(10px) scale(.97); } 42%, 88% { opacity: 1; transform: none; } 95%, 100% { opacity: 0; transform: translateY(6px); } }
 
   /* Streaming player chrome around the demo */
@@ -278,7 +279,7 @@
 
   /* Card 3: hear it said, for real */
   .say { margin-top: 24px; display: flex; align-items: center; gap: 16px; border-radius: 16px; background: rgba(255,255,255,.03); box-shadow: inset 0 0 0 1px rgba(255,255,255,.07); padding: 16px 18px; }
-  .say button { all: unset; cursor: pointer; flex: none; width: 52px; height: 52px; border-radius: 50%; background: var(--gold); color: #111; display: grid; place-items: center; box-shadow: 0 10px 30px rgba(242,201,76,.25); transition: transform .2s; }
+  .say button { all: unset; cursor: pointer; flex: none; width: 52px; height: 52px; border-radius: 50%; background: var(--gold); color: #111; display: grid; place-items: center; box-shadow: 0 10px 30px rgba(184,242,107,.25); transition: transform .2s; }
   .say button:hover { transform: scale(1.05); }
   .say button:active { transform: scale(.95); }
   .say button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
@@ -289,7 +290,7 @@
   .bars i { flex: 1; min-width: 2px; border-radius: 2px; background: rgba(255,255,255,.18); height: var(--h); transition: background .15s; }
   .bars i.on { background: var(--gold); }
   @media (max-width: 900px) { .bento { grid-template-columns: 1fr; } .bx.big { grid-row: auto; } .mini { min-height: 300px; } .bx { padding: 22px; } }
-  @media (prefers-reduced-motion: reduce) { .mini .gc { opacity: 1; } .mini .sb mark { color: #111; } .mini .sb mark::before { transform: scaleX(1); } .mini .cur { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .mini .gc { opacity: 1; } .mini .sb mark { color: #fff; } .mini .sb mark::before { transform: scaleX(1); } .mini .cur { display: none; } }
 
   /* Dashboard */
   .dash { margin-top: 50px; border-radius: 14px; background: #0b0b0c; box-shadow: 0 40px 100px rgba(0,0,0,.6), inset 0 0 0 1px var(--line); overflow: hidden; }
@@ -378,7 +379,7 @@
 
 <header class="nav" id="nav">
   <div class="wrap">
-    <a class="logo" href="#top"><svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#ede8dc"/><rect x="26" y="45" width="76" height="10" rx="5" fill="#141311" opacity=".4"/><rect x="26" y="69" width="24" height="10" rx="5" fill="#141311"/><rect x="56" y="64" width="46" height="20" rx="6" fill="#F2C94C"/></svg>Glossa</a>
+    <a class="logo" href="#top"><svg <svg aria-hidden="true" viewBox="0 0 128 128"><rect width="128" height="128" rx="32" fill="#161B25"/><path d="M45 29H83Q97 29 97 43V71Q97 85 83 85H58L41 100V85Q31 83 31 71V43Q31 29 45 29Z" fill="none" stroke="#ECEEF4" stroke-width="7" stroke-linejoin="round"/><path d="M55 43L80 57L55 71Z" fill="#B8F26B" stroke="#B8F26B" stroke-width="2" stroke-linejoin="round"/></svg>glossa</a>
     <nav class="cap"><a href="#product">Product</a><a href="#examples">Examples</a><a href="#faq">FAQ</a></nav>
     <div class="r cap"><a class="gh" href="https://github.com/kunalsharmavlog-hue/glossa">GitHub</a><a class="pill" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><span>Download</span><span>Download</span></a></div>
   </div>
@@ -416,7 +417,7 @@
 
       <div class="center">
         <div class="copy" id="copy">
-          <div class="note" id="note">New in v1.2: Pause &amp; Pick is here<a href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest">See what's new</a></div>
+          <div class="note" id="note">New in v1.3: a fresh new look<a href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest">See what's new</a></div>
           <h1><span class="a" id="la">Learn English</span><span class="b"><span id="lb1">from every</span><span id="lb2">movie</span></span></h1>
           <div class="cta" id="cta"><a class="pill" href="https://github.com/kunalsharmavlog-hue/glossa/releases/latest/download/glossa.zip"><span>Add to Chrome</span><span>Add to Chrome</span></a></div>
         </div>
@@ -466,12 +467,12 @@
             <div class="shade"></div><div class="ttl"><b><em>Pause</em> &amp; Pick</b><div class="tags"><span class="y">Word</span><span>Phrase</span><span>Line</span></div></div></div>
         </div>
         <div class="phone mid rv" style="--d:.08s">
-          <div class="scr" style="background:radial-gradient(ellipse at 50% 30%, #3a2a12, #0d0d0e)"><img class="pdf" src="assets/pdf-page.jpg" alt="A real page from a Glossa vocabulary PDF">
+          <div class="scr" style="background:radial-gradient(ellipse at 50% 30%, #1f3214, #0d0f12)"><img class="pdf" src="assets/pdf-page.jpg" alt="A real page from a Glossa vocabulary PDF">
             <div class="shade"></div><div class="ttl"><b>Your <em>PDF</em>, ready at the credits</b><div class="tags"><span class="y">Picks first</span><span>Timestamps</span></div></div></div>
         </div>
         <div class="phone rv" style="--d:.16s">
           <div class="scr"><div class="pop">
-            <h4><svg viewBox="0 0 128 128"><rect width="128" height="128" rx="30" fill="#141311"/><rect x="26" y="45" width="76" height="10" rx="5" fill="#EDE8DC" opacity=".45"/><rect x="26" y="69" width="24" height="10" rx="5" fill="#EDE8DC"/><rect x="56" y="64" width="46" height="20" rx="6" fill="#F2C94C"/></svg>Glossa</h4>
+            <h4><svg <svg aria-hidden="true" viewBox="0 0 128 128"><rect width="128" height="128" rx="32" fill="#161B25"/><path d="M45 29H83Q97 29 97 43V71Q97 85 83 85H58L41 100V85Q31 83 31 71V43Q31 29 45 29Z" fill="none" stroke="#ECEEF4" stroke-width="7" stroke-linejoin="round"/><path d="M55 43L80 57L55 71Z" fill="#B8F26B" stroke="#B8F26B" stroke-width="2" stroke-linejoin="round"/></svg>glossa</h4>
             <div class="sel">All hard words ▾</div>
             <div class="tg"><span>Pause &amp; Pick</span><i></i></div>
             <div class="tg"><span>Show subtitles</span><i class="off"></i></div>
@@ -515,7 +516,7 @@
           <p>Every word comes in simple English, in Hindi script, and in Hinglish for when you don't read Devanagari.</p>
           <div class="trio" id="trio">
             <div class="w"><b data-v="w">reluctant</b><small data-v="pos">adjective</small></div>
-            <div class="row" style="--c:#f2c94c"><span>English</span><span data-v="en">not wanting to do something</span></div>
+            <div class="row" style="--c:#b8f26b"><span>English</span><span data-v="en">not wanting to do something</span></div>
             <div class="row" style="--c:#fb7185"><span>Hindi</span><span class="hi" data-v="hi">अनिच्छुक</span></div>
             <div class="row" style="--c:#60a5fa"><span>Hinglish</span><span data-v="hg">anichchhuk</span></div>
           </div>
@@ -616,7 +617,7 @@
     <footer>
       <div class="wrap">
         <div class="fgrid" style="text-align:left">
-          <div><a class="logo" href="#top" style="display:flex;color:#fff;font-size:19px"><svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#ede8dc"/><rect x="26" y="45" width="76" height="10" rx="5" fill="#141311" opacity=".4"/><rect x="26" y="69" width="24" height="10" rx="5" fill="#141311"/><rect x="56" y="64" width="46" height="20" rx="6" fill="#F2C94C"/></svg>Glossa</a><p>Learn English from every movie. Made by Kunal Sharma.</p></div>
+          <div><a class="logo" href="#top" style="display:flex;color:#fff"><svg <svg aria-hidden="true" viewBox="0 0 128 128"><rect width="128" height="128" rx="32" fill="#161B25"/><path d="M45 29H83Q97 29 97 43V71Q97 85 83 85H58L41 100V85Q31 83 31 71V43Q31 29 45 29Z" fill="none" stroke="#ECEEF4" stroke-width="7" stroke-linejoin="round"/><path d="M55 43L80 57L55 71Z" fill="#B8F26B" stroke="#B8F26B" stroke-width="2" stroke-linejoin="round"/></svg>glossa</a><p>Learn English from every movie. Made by Kunal Sharma.</p></div>
           <div><h4 class="cap">Product</h4><a href="#product">Word lists</a><a href="#how">How it works</a><a href="#examples">Examples</a><a href="#faq">FAQ</a></div>
           <div><h4 class="cap">Project</h4><a href="https://github.com/kunalsharmavlog-hue/glossa">GitHub</a><a href="https://github.com/kunalsharmavlog-hue/glossa/releases">Releases</a><a href="https://github.com/kunalsharmavlog-hue/glossa/issues">Report a problem</a><a href="https://github.com/kunalsharmavlog-hue/glossa/blob/main/LICENSE">MIT License</a></div>
           <div><h4 class="cap">Powered by</h4><a href="https://en.wiktionary.org">Wiktionary</a><a href="https://dictionaryapi.dev">Free Dictionary API</a><a href="https://mymemory.translated.net">MyMemory</a><a href="https://www.datamuse.com/api/">Datamuse</a></div>

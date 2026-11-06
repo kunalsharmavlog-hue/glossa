@@ -3,38 +3,38 @@
 <head>
 <meta charset="utf-8">
 <style>
-  :root { --paper: #F3F0E8; --ink: #141311; --mute: #7a756b; --line: rgba(20,19,17,.1); --gold: #F2C94C; }
+  :root { --paper: #0F1217; --ink: #EEF0F5; --mute: #9AA0AB; --line: rgba(255,255,255,.1); --gold: #B8F26B; --field: #181C24; }
   * { box-sizing: border-box; }
   body { width: 320px; margin: 0; padding: 18px 18px 14px; font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Inter", sans-serif; color: var(--ink); background: var(--paper); }
   header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
   header img { width: 28px; height: 28px; }
-  h1 { font: 500 22px/1 ui-serif, "New York", Georgia, serif; letter-spacing: -.01em; margin: 0; }
+  h1 { font: 800 21px/1 -apple-system, "Inter", sans-serif; letter-spacing: -.045em; margin: 0; }
   header span { margin-left: auto; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
   .label { display: block; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-bottom: 6px; }
-  select { width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font: inherit; color: var(--ink); appearance: none;
+  select { width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background-color: var(--field); font: inherit; color: var(--ink); appearance: none;
     background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
     background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
   .toggles { margin: 14px 0 6px; border-top: 1px solid var(--line); }
   .toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
   .toggle small { display: block; color: var(--mute); font-size: 11.5px; }
-  .toggle input { appearance: none; flex: 0 0 34px; height: 20px; border-radius: 999px; background: rgba(20,19,17,.18); position: relative; cursor: pointer; transition: background .2s; margin: 0; }
+  .toggle input { appearance: none; flex: 0 0 34px; height: 20px; border-radius: 999px; background: rgba(255,255,255,.16); position: relative; cursor: pointer; transition: background .2s; margin: 0; }
   .toggle input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
-  .toggle input:checked { background: var(--ink); }
-  .toggle input:checked::after { transform: translateX(14px); background: var(--gold); }
+  .toggle input:checked { background: var(--gold); }
+  .toggle input:checked::after { transform: translateX(14px); background: #0B0C10; }
   #movies { margin-top: 12px; }
   .movie { padding: 12px 0; border-bottom: 1px solid var(--line); }
   .movie:last-child { border-bottom: 0; }
-  .name { font: 500 15px ui-serif, "New York", Georgia, serif; width: 100%; border: 1px solid transparent; border-radius: 6px; padding: 2px 4px; margin-left: -4px; background: transparent; color: var(--ink); }
-  .name:hover, .name:focus { border-color: var(--line); background: #fff; outline: none; }
+  .name { font: 600 14.5px -apple-system, "Inter", sans-serif; width: 100%; border: 1px solid transparent; border-radius: 6px; padding: 2px 4px; margin-left: -4px; background: transparent; color: var(--ink); }
+  .name:hover, .name:focus { border-color: var(--line); background: var(--field); outline: none; }
   .meta { color: var(--mute); font-size: 11.5px; margin: 2px 0 8px; }
-  button { background: var(--ink); color: var(--paper); border: 0; border-radius: 999px; padding: 7px 14px; cursor: pointer; font: 600 12px -apple-system, sans-serif; transition: transform .15s; }
+  button { background: var(--gold); color: #0B0C10; border: 0; border-radius: 999px; padding: 7px 14px; cursor: pointer; font: 600 12px -apple-system, sans-serif; transition: transform .15s; }
   button:hover { transform: translateY(-1px); }
   button:disabled { opacity: .55; cursor: default; transform: none; }
   .empty { color: var(--mute); padding: 14px 0 4px; }
 </style>
 </head>
 <body>
-  <header><img src="icons/icon48.png" alt=""><h1>Glossa</h1><span>v1.2</span></header>
+  <header><img src="icons/icon48.png" alt=""><h1>glossa</h1><span>v1.3</span></header>
   <label><span class="label">Which words to collect</span>
     <select id="level">
       <option value="all">All hard words (sake, extraordinary)</option>
