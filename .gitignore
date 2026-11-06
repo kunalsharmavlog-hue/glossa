@@ -1,0 +1,4 @@
+# Vocabulary PDFs contain lines from movie subtitles, so they stay out of the repository.
+*.pdf
+.DS_Store
+dist/

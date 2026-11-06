@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "SubVocab",
+  "version": "1.1.0",
+  "description": "Learn English from Netflix subtitles: pause and pick any word for its meaning, and get a vocabulary PDF when the movie ends.",
+  "permissions": ["storage", "downloads", "scripting", "alarms"],
+  "host_permissions": [
+    "https://www.netflix.com/*",
+    "https://api.dictionaryapi.dev/*",
+    "https://en.wiktionary.org/*",
+    "https://simple.wiktionary.org/*",
+    "https://api.mymemory.translated.net/*",
+    "https://api.datamuse.com/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_popup": "popup.html", "default_title": "SubVocab" },
+  "content_scripts": [
+    {
+      "matches": ["https://www.netflix.com/*"],
+      "js": ["content.js", "learn.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.netflix.com/*"],
+      "js": ["page-bridge.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    }
+  ]
+}

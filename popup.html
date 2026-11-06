@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { width: 300px; margin: 0; padding: 14px; font: 13px/1.4 -apple-system, sans-serif; color: #222; background: #fff; }
+  h1 { font-size: 15px; margin: 0 0 10px; }
+  label { display: block; margin-bottom: 8px; }
+  select { width: 100%; margin-top: 3px; padding: 4px; }
+  .movie { border-top: 1px solid #e4e4e4; padding: 9px 0; }
+  .name { font: 600 13px -apple-system, sans-serif; width: 100%; box-sizing: border-box; border: 1px solid transparent; padding: 2px 3px; margin-left: -3px; }
+  .name:hover, .name:focus { border-color: #bbb; }
+  .meta { color: #666; font-size: 12px; margin: 1px 0 6px; }
+  button { background: #e50914; color: #fff; border: 0; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 12px; }
+  button:disabled { opacity: .6; cursor: default; }
+  .empty { color: #666; border-top: 1px solid #e4e4e4; padding-top: 9px; }
+</style>
+</head>
+<body>
+  <h1>SubVocab</h1>
+  <label>Which words to collect
+    <select id="level">
+      <option value="all">All hard words (sake, extraordinary)</option>
+      <option value="medium">Medium and hard (reluctant, ambiguous)</option>
+      <option value="hardest">Hardest only (surreptitious)</option>
+    </select>
+  </label>
+  <label><input type="checkbox" id="showSubs"> Show subtitles on screen</label>
+  <label><input type="checkbox" id="pausePick"> Pause &amp; Pick: pause, then click a word for its meaning</label>
+  <div id="movies"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
