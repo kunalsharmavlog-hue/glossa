@@ -2,9 +2,11 @@
 
 # Glossa
 
-**Learn the words you hear.** Glossa is a free Chrome extension that reads the English subtitles while you watch Netflix.
+**Learn the words you hear.** Glossa is a free Chrome extension that reads the English subtitles while you watch Netflix, YouTube or any other video.
 
 **Website:** https://kunalsharmavlog-hue.github.io/glossa/
+
+![Pause & Pick: a paused subtitle with the word "ambiguous" picked and explained in English, Hindi and Hinglish](docs/assets/pause-and-pick.png)
 
 - **Pause & Pick, on any video site.** Pause Netflix, YouTube, Prime Video, Hotstar or any player with subtitles, and the subtitle turns into text you can select. Click a word, or drag across a phrase or the whole line, to see its meaning in English, Hindi and Hinglish. 🔊 plays the pronunciation, Copy copies it, and on Netflix ★ saves it to the movie's PDF.
 - **Automatic vocabulary PDF, in your folder.** Choose a folder once (popup → PDF folder → Change). When a Netflix movie ends, its PDF is saved there by itself, with a small note at the top of the screen. Without a folder, PDFs go to Downloads/Glossa. Each word has a short meaning, Hindi, Hinglish, similar words and the line it was spoken in, with a timestamp. Your picks come first.
