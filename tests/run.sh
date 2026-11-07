@@ -8,4 +8,4 @@ mkdir -p .work
 [ -f .work/cert.pem ] || openssl req -x509 -newkey rsa:2048 -nodes -keyout .work/key.pem -out .work/cert.pem -days 365 -subj "/CN=www.netflix.com" -addext "subjectAltName=DNS:www.netflix.com" 2>/dev/null
 [ -f .work/movie.mp4 ] || ffmpeg -loglevel error -y -f lavfi -i "color=c=0x223344:s=320x180:d=360:r=4" -c:v libx264 -preset ultrafast -pix_fmt yuv420p -movflags +faststart .work/movie.mp4
 rm -rf .work/profile
-node e2e.mjs ..
+node e2e.mjs .. && node players.mjs .. && node extras.mjs ..

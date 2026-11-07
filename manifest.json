@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Glossa",
-  "version": "1.3.1",
-  "description": "Learn English from what you watch: pause, pick any subtitle word for its meaning in English, Hindi and Hinglish, and get a vocabulary PDF when the movie ends.",
+  "version": "1.5.0",
+  "description": "Learn English from what you watch: pause any video, pick a subtitle word for its meaning in English, Hindi and Hinglish, and get a vocabulary PDF of every Netflix film.",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -13,7 +13,9 @@
     "storage",
     "downloads",
     "scripting",
-    "alarms"
+    "alarms",
+    "offscreen",
+    "notifications"
   ],
   "host_permissions": [
     "https://www.netflix.com/*",
@@ -46,6 +48,19 @@
         "learn.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "exclude_matches": [
+        "https://www.netflix.com/*"
+      ],
+      "js": [
+        "learn.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
     },
     {
       "matches": [

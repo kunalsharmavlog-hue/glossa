@@ -31,10 +31,12 @@
   button:hover { transform: translateY(-1px); }
   button:disabled { opacity: .55; cursor: default; transform: none; }
   .empty { color: var(--mute); padding: 14px 0 4px; }
+  button.ghost { background: rgba(255,255,255,.1); color: var(--ink); flex: none; }
+  #folderName { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
 </head>
 <body>
-  <header><img src="icons/icon48.png" alt=""><h1>glossa</h1><span>v1.3.1</span></header>
+  <header><img src="icons/icon48.png" alt=""><h1>glossa</h1><span>v1.5</span></header>
   <label><span class="label">Which words to collect</span>
     <select id="level">
       <option value="all">All hard words (sake, extraordinary)</option>
@@ -43,8 +45,9 @@
     </select>
   </label>
   <div class="toggles">
-    <label class="toggle"><span>Pause &amp; Pick<small>Pause, then click a word for its meaning</small></span><input type="checkbox" id="pausePick"></label>
+    <label class="toggle"><span>Pause &amp; Pick<small>Pause any video, then click a subtitle word</small></span><input type="checkbox" id="pausePick"></label>
     <label class="toggle"><span>Show subtitles<small>Keep subtitles visible while watching</small></span><input type="checkbox" id="showSubs"></label>
+    <div class="toggle"><span>PDF folder<small id="folderName">Downloads / Glossa</small></span><button id="folderBtn" class="ghost">Change</button></div>
   </div>
   <div id="movies"></div>
   <script src="popup.js"></script>

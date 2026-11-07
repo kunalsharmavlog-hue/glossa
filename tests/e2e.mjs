@@ -128,6 +128,8 @@ try {
   let pdf = null;
   for (let i = 0; i < 90 && !pdf; i++) { await sleep(1000); const f = fs.readdirSync(DL, { recursive: true }).find((x) => String(x).endsWith(".pdf")); if (f) pdf = String(f); }
   check("PDF downloads by itself at the end", !!pdf, pdf || "no PDF after 90s");
+  const note = await ev("document.getElementById('glossa-saved')?.innerText || null");
+  check("A small note at the top says the PDF was saved", !!note && /PDF saved/.test(note), (note || "no note").replace(/\s+/g, " "));
   if (pdf) {
     const bytes = fs.readFileSync(path.join(DL, pdf));
     const text = bytes.toString("latin1");

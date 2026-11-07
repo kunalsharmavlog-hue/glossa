@@ -364,19 +364,13 @@ async function buildPdf(id) {
     });
 
     const safeName = title.replace(/[\\/:*?"<>|~\x00-\x1f]/g, " ").replace(/\s+/g, " ").trim().replace(/^\.+|\.+$/g, "").slice(0, 80) || "Movie";
-    const filename = `Glossa/${safeName} - Vocabulary.pdf`;
-    pendingNames.push(filename);
-    const downloadId = await chrome.downloads.download({
-      url: "data:application/pdf;base64," + btoa(pdf),
-      filename,
-      conflictAction: "uniquify",
-      saveAs: false,
-    });
+    const saved = await savePdf(btoa(pdf), `${safeName} - Vocabulary.pdf`);
 
     // Kept apart from the session, which the open Netflix tab keeps overwriting.
     await chrome.storage.local.set({ [`built:${id}`]: { lines: s.lines.length, at: Date.now(), words: entries.length } });
     chrome.action.setBadgeText({ text: "✓" });
-    return { ok: true, words: entries.length, downloadId };
+    announceSaved({ title, words: entries.length, ...saved });
+    return { ok: true, words: entries.length, ...saved };
   } catch (err) {
     console.error("PDF build failed", err);
     chrome.action.setBadgeText({ text: "!" });
@@ -388,6 +382,81 @@ async function buildPdf(id) {
     resumePending();
   }
 }
+
+// The PDF goes into the folder the user chose. If none was chosen, or Chrome needs the user's OK
+// again for that folder, it goes to Downloads/Glossa instead, so a PDF is never lost.
+async function ensureOffscreen() {
+  const has = await chrome.runtime.getContexts({ contextTypes: ["OFFSCREEN_DOCUMENT"] });
+  if (has.length) return;
+  try {
+    await chrome.offscreen.createDocument({ url: "offscreen.html", reasons: ["BLOBS"], justification: "Write vocabulary PDFs into the folder the user chose" });
+  } catch (err) {
+    if (!/single offscreen/i.test(String(err))) throw err; // Another save opened it a moment ago.
+  }
+}
+
+async function savePdf(base64, name) {
+  const { pdfFolder } = await chrome.storage.local.get("pdfFolder");
+  let needsPermission = false;
+  if (pdfFolder) {
+    try {
+      await ensureOffscreen();
+      const res = await chrome.runtime.sendMessage({ target: "offscreen", type: "save", name, base64 });
+      if (res && res.ok) return { where: "folder", folder: res.folder, file: res.name };
+      needsPermission = !!res && res.reason === "permission";
+    } catch (err) {
+      console.warn("Saving to the chosen folder failed", err);
+    }
+  }
+  const filename = `Glossa/${name}`;
+  pendingNames.push(filename);
+  const downloadId = await chrome.downloads.download({
+    url: "data:application/pdf;base64," + base64, filename, conflictAction: "uniquify", saveAs: false,
+  });
+  return { where: "downloads", folder: "Downloads/Glossa", file: name, downloadId, needsPermission, wanted: pdfFolder || "" };
+}
+
+// A small note at the top of the Netflix tab; a system notification when no Netflix tab is open.
+async function announceSaved(info) {
+  const tabs = await chrome.tabs.query({ url: "https://www.netflix.com/*" });
+  let shown = false;
+  for (const tab of tabs) {
+    try { await chrome.tabs.sendMessage(tab.id, { type: "glossa-saved", ...info }); shown = true; } catch {}
+  }
+  if (shown) return;
+  const where = info.where === "folder" ? `in "${info.folder}"` : "in Downloads/Glossa";
+  chrome.notifications.create(`saved:${Date.now()}`, {
+    type: "basic", iconUrl: "icons/icon128.png", title: "Vocabulary PDF saved",
+    message: `${info.title} · ${info.words} words, ${where}` + (info.needsPermission ? ". Open Glossa to allow your folder again." : ""),
+  });
+}
+
+chrome.notifications.onClicked.addListener((id) => {
+  if (id.startsWith("saved:")) chrome.tabs.create({ url: chrome.runtime.getURL("folder.html") });
+});
+
+// Glossa installed from a folder (Load unpacked) reloads itself when its files change,
+// so an update never leaves an old copy running.
+const CODE_FILES = ["manifest.json", "background.js", "content.js", "learn.js", "page-bridge.js", "vocab.js", "pdf.js", "hinglish.js", "folderstore.js", "offscreen.js", "folder.js", "popup.js", "popup.html"];
+const SELF_UPDATE_ALARM = "self-update";
+async function codeFingerprint() {
+  let text = "";
+  for (const f of CODE_FILES) {
+    try { text += f + (await (await fetch(chrome.runtime.getURL(f), { cache: "no-store" })).text()); } catch {}
+  }
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function checkForUpdate() {
+  const self_ = await chrome.management.getSelf().catch(() => null);
+  if (!self_ || self_.installType !== "development") return;
+  chrome.alarms.create(SELF_UPDATE_ALARM, { periodInMinutes: 0.5 });
+  const now = await codeFingerprint();
+  const { codeHash } = await chrome.storage.session.get("codeHash");
+  if (!codeHash) { await chrome.storage.session.set({ codeHash: now }); return; }
+  if (codeHash !== now && !building.size) chrome.runtime.reload();
+}
+checkForUpdate();
 
 // Some browsers and download-manager extensions rename files; this keeps the film's name on every PDF.
 const pendingNames = [];
@@ -420,6 +489,11 @@ chrome.runtime.onInstalled.addListener(async () => {
     chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["page-bridge.js"], world: "MAIN" }).catch(() => {});
     chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["learn.js"] }).catch(() => {});
   }
+  // Pause & Pick also runs on every other site with a video, so open tabs get it without a refresh.
+  for (const tab of await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] })) {
+    if (/^https:\/\/www\.netflix\.com\//.test(tab.url || "")) continue;
+    chrome.scripting.executeScript({ target: { tabId: tab.id, allFrames: true }, files: ["learn.js"] }).catch(() => {});
+  }
   await chrome.storage.local.remove(["defs", "meanings"]); // Left over from older versions.
   await catchUp();
 });
@@ -427,10 +501,16 @@ chrome.runtime.onInstalled.addListener(async () => {
 chrome.runtime.onStartup.addListener(catchUp);
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === RESUME_ALARM) resumePending();
+  if (alarm.name === SELF_UPDATE_ALARM) checkForUpdate();
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
-  if (msg.type === "watching" && sender.tab) {
+  if (msg.target === "offscreen") return; // For the hidden save page, not for this script.
+  if (msg.type === "open-folder-page") {
+    chrome.tabs.create({ url: chrome.runtime.getURL("folder.html") });
+  } else if (msg.type === "show-download" && msg.id) {
+    chrome.downloads.show(msg.id);
+  } else if (msg.type === "watching" && sender.tab) {
     // A visible sign on the toolbar icon that this tab is being recorded.
     chrome.action.setBadgeBackgroundColor({ tabId: sender.tab.id, color: "#1a7f37" });
     chrome.action.setBadgeText({ tabId: sender.tab.id, text: "REC" });

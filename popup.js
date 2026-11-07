@@ -8,6 +8,7 @@ async function render() {
   level.value = all.level || "all";
   showSubs.checked = !!all.showSubs;
   pausePick.checked = all.pausePick !== false;
+  document.getElementById("folderName").textContent = all.pdfFolder || "Downloads / Glossa";
 
   const sessions = Object.keys(all)
     .filter((k) => k.startsWith("s:"))
@@ -63,4 +64,6 @@ async function render() {
 level.addEventListener("change", () => chrome.storage.local.set({ level: level.value }));
 showSubs.addEventListener("change", () => chrome.storage.local.set({ showSubs: showSubs.checked }));
 pausePick.addEventListener("change", () => chrome.storage.local.set({ pausePick: pausePick.checked }));
+// Picking a folder needs a full page: the popup would close as soon as the folder picker opens.
+document.getElementById("folderBtn").addEventListener("click", () => chrome.tabs.create({ url: chrome.runtime.getURL("folder.html") }));
 render();

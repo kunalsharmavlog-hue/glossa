@@ -34,6 +34,39 @@
     setTimeout(() => box.remove(), 8000);
   }
 
+  // The small note at the top when a vocabulary PDF has been saved.
+  function savedNote(info) {
+    document.getElementById("glossa-saved")?.remove();
+    const box = document.createElement("div");
+    box.id = "glossa-saved";
+    box.setAttribute("role", "status");
+    box.style.cssText = "all:initial;position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:2147483647;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 14px;border-radius:999px;background:rgba(18,21,27,.94);box-shadow:0 12px 40px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.1);font:500 14px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;color:#EEF0F5;max-width:min(92vw,620px);transition:opacity .3s,translate .3s;translate:0 -8px;opacity:0";
+    const icon = document.createElement("span");
+    icon.textContent = "✓";
+    icon.style.cssText = "all:initial;flex:none;width:24px;height:24px;border-radius:50%;background:#B8F26B;color:#0B0C10;display:grid;place-items:center;font:800 13px -apple-system,sans-serif";
+    const text = document.createElement("span");
+    text.style.cssText = "all:initial;font:inherit;color:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";
+    const where = info.where === "folder" ? `in "${info.folder}"` : "in Downloads/Glossa";
+    text.textContent = `PDF saved · ${info.title} · ${info.words} words ${where}`;
+    box.append(icon, text);
+    const button = (label, fn) => {
+      const b = document.createElement("button");
+      b.textContent = label;
+      b.style.cssText = "all:initial;flex:none;cursor:pointer;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.1);color:#EEF0F5;font:600 12.5px -apple-system,sans-serif";
+      b.addEventListener("click", (e) => { e.stopPropagation(); fn(); });
+      box.append(b);
+    };
+    if (info.needsPermission) button("Allow folder", () => chrome.runtime.sendMessage({ type: "open-folder-page" }));
+    else if (info.where === "downloads" && info.downloadId) button("Show", () => chrome.runtime.sendMessage({ type: "show-download", id: info.downloadId }));
+    button("×", () => box.remove());
+    (document.fullscreenElement || document.body).appendChild(box);
+    requestAnimationFrame(() => { box.style.opacity = "1"; box.style.translate = "0 0"; });
+    setTimeout(() => { box.style.opacity = "0"; setTimeout(() => box.remove(), 400); }, 9000);
+  }
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg && msg.type === "glossa-saved") savedNote(msg);
+  });
+
   function warnOnce(key, text) {
     if (warned[key]) return;
     warned[key] = true;
