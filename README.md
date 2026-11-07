@@ -6,8 +6,9 @@
 
 **Website:** https://kunalsharmavlog-hue.github.io/glossa/
 
-- **Pause & Pick.** Pause the movie and the subtitle turns into text you can select. Click a word, or drag across a phrase or the whole line, to see its meaning in English, Hindi and Hinglish. 🔊 plays the pronunciation, and ★ saves it to the movie's PDF.
-- **Automatic vocabulary PDF.** When the movie ends, a PDF of every hard word downloads by itself. Each word has a short meaning, Hindi, Hinglish, similar words and the line it was spoken in, with a timestamp. Your picks come first.
+- **Pause & Pick, on any video site.** Pause Netflix, YouTube, Prime Video, Hotstar or any player with subtitles, and the subtitle turns into text you can select. Click a word, or drag across a phrase or the whole line, to see its meaning in English, Hindi and Hinglish. 🔊 plays the pronunciation, Copy copies it, and on Netflix ★ saves it to the movie's PDF.
+- **Automatic vocabulary PDF, in your folder.** Choose a folder once (popup → PDF folder → Change). When a Netflix movie ends, its PDF is saved there by itself, with a small note at the top of the screen. Without a folder, PDFs go to Downloads/Glossa. Each word has a short meaning, Hindi, Hinglish, similar words and the line it was spoken in, with a timestamp. Your picks come first.
+- **Always up to date.** Installed with Load unpacked, Glossa reloads itself when its files change.
 - **Your level.** Collect all hard words, medium and hard words, or only the hardest.
 - **Private.** No account and no server. Subtitles stay in your browser's storage. Only the words being looked up are sent to free services: [Free Dictionary API](https://dictionaryapi.dev), [Wiktionary](https://en.wiktionary.org), [MyMemory](https://mymemory.translated.net) and [Datamuse](https://www.datamuse.com/api/).
 

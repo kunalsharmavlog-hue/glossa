@@ -2,8 +2,10 @@
 // Click a word, or drag across a phrase or the whole line, and its meaning appears on screen.
 // Works on Netflix and on any other site that plays video with subtitles (YouTube, Prime Video, Hotstar, ...).
 (function () {
-  if (window.__glossaPick) return; // Already running after an extension reload.
+  if (window.__glossaPick) return; // Already running in this page.
   window.__glossaPick = true;
+  // A copy left over from before an extension reload may still have its bar on screen; this copy takes over.
+  document.querySelectorAll(".glossa-bar, .glossa-card").forEach((n) => n.remove());
 
   const POLL_MS = 250, KEEP_LAST_CUE_S = 12, SHOW_DELAY_MS = 180;
   const P = "glossa-"; // Class prefix, so that the site's styles and ours never mix.
@@ -24,7 +26,7 @@
   ];
   const SUB_BOXES = ".player-timedtext, .ytp-caption-window-container, .atvwebplayersdk-captions-overlay, .dss-subtitle-renderer, .shaka-text-container, .vjs-text-track-display, .jw-captions, .plyr__captions, .bmpui-ui-subtitle-overlay";
 
-  let enabled = true, video = null, bar = null, textEl = null, card = null, request = 0;
+  let enabled = true, dead = false, video = null, bar = null, textEl = null, card = null, request = 0;
   let lastCue = "", lastCueAt = -1, showTimer = null;
 
   const alive = () => { try { return !!chrome.runtime?.id; } catch { return false; } };
@@ -138,6 +140,7 @@
   }
 
   function show() {
+    if (dead || !alive()) { retire(); return; }
     if (!enabled || bar || !video || !video.paused || video.ended || !onPlayerPage()) return;
     let text = readCue();
     if (!text && lastCue && Math.abs(video.currentTime - lastCueAt) < KEEP_LAST_CUE_S) text = lastCue;
@@ -151,9 +154,20 @@
     bar.addEventListener("mouseup", (e) => setTimeout(() => pick(e), 0));
     mount().appendChild(bar);
     // Keep the bar above the video: sit just over the bottom of the player when it is not full screen.
+    // Sit above the player's own controls (seek bar, buttons), which take the bottom of the video.
     const r = video.getBoundingClientRect();
-    if (!document.fullscreenElement && r.bottom < innerHeight - 40) bar.style.bottom = Math.max(16, innerHeight - r.bottom + r.height * 0.1) + "px";
+    const fromVideoBottom = Math.max(r.height * 0.2, 110);
+    bar.style.bottom = Math.max(16, innerHeight - Math.min(r.bottom, innerHeight) + fromVideoBottom) + "px";
     document.documentElement.classList.add(P + "hide-subs");
+  }
+
+  // After Glossa is reloaded or updated, this copy can no longer reach it, so it steps aside
+  // and the fresh copy that Glossa puts into the page does the work.
+  function retire() {
+    if (dead) return;
+    dead = true;
+    close();
+    css.remove();
   }
 
   function close() {
@@ -321,7 +335,7 @@
   });
 
   const timer = setInterval(() => {
-    if (!alive()) { clearInterval(timer); close(); return; }
+    if (!alive()) { clearInterval(timer); retire(); return; }
     if (!onPlayerPage()) { close(); return; }
     const v = mainVideo();
     if (v && v !== video) { close(); attach(v); }
